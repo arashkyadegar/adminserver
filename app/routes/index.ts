@@ -1,5 +1,5 @@
 var express = require("express");
-// const CategoryRouter = require("../category/categoryRouter");
+const CategoryRouter = require("../category/categoryRouter");
 // const StoreRouter = require("../store/storeRouter");
 const ProductRouter = require("../product/productRouter");
 // const WalletRouter = require("../wallet/walletRouter");
@@ -13,7 +13,7 @@ const UploadRouter = require("../upload/uploadRouter");
 
 module.exports = function (app: any) {
 
-     // app.use('/categories', CategoryRouter);
+     app.use('/categories', CategoryRouter);
      // app.use('/storesWeb', StoreWebRouter);
      // app.use('/stores', StoreRouter);
      app.use('/products', ProductRouter);

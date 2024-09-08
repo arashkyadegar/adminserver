@@ -22,12 +22,13 @@ export class ProductEntity {
      tags: string[] = [];
 
      //sell
+     status: number = 0;
      size: string = "";
      price: number = 0;
      purchasePrice: number = 0;
      weight: string = "";
      stock: string = "";
-     color: string[] = [];
+     colors: string[] = [];
 
      userId: string = "";
 
@@ -53,15 +54,16 @@ export const ProductSchema = Joi.object({
      pageTitle: Joi.string(),
      pageLink: Joi.string(),
      desc: Joi.string(),
-     keywords:  Joi.array(),
-     tags:  Joi.array(),
+     keywords: Joi.array(),
+     tags: Joi.array(),
 
+     status: Joi.number(),
      size: Joi.string(),
      price: Joi.number(),
      purchasePrice: Joi.number(),
      weight: Joi.string(),
      stock: Joi.string(),
-     color: Joi.array(),
+     colors: Joi.array(),
 
      createdAt: Joi.string().allow(""),
      updatedAt: Joi.string().allow("")

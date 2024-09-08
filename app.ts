@@ -7,8 +7,8 @@ const bodyParser = require("body-parser");
 var app = express();
 
 var corsOptions = {
-     // origin: "https://postapp-next.liara.run",
-     origin: "http://localhost:3000",
+     origin: "https://adminapp.liara.run",
+     // origin: "http://localhost:3000",
      optionsSuccessStatus: 200,
      methods: "GET, PUT, POST, DELETE",
      //preflightContinue: true,

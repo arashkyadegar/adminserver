@@ -38,16 +38,10 @@ export class ProductDalConc implements ProductDal {
                               "_id": 1,
                               "name": 1,
                               "stock": 1,
-                              "weight": 1,
-                              "img": 1,
-                              "customerPrice": 1,
-                              "fakePrice": 1,
-                              "code": 1,
+                              "price": 1,
+                              "images": 1,
                               "status": 1,
-                              "available": 1,
-                              "active": 1,
-                              "category._id": 1,
-                              "category.name": 1
+                              "createdAt": 1,
                          }
                     }, { $addFields: { category: { $first: "$category" } } }]).toArray();
                return result;
@@ -85,12 +79,13 @@ export class ProductDalConc implements ProductDal {
                               tags: entity.tags,
 
                               //sell
+                              status: entity.status,
                               size: entity.size,
                               price: entity.price,
                               purchasePrice: entity.purchasePrice,
                               weight: entity.weight,
                               stock: entity.stock,
-                              color: entity.color,
+                              colors: entity.colors,
                               updatedAt: Date.now()
                          },
                     });
@@ -160,16 +155,11 @@ export class ProductDalConc implements ProductDal {
                               "_id": 1,
                               "name": 1,
                               "stock": 1,
-                              "weight": 1,
-                              "img": 1,
-                              "customerPrice": 1,
-                              "fakePrice": 1,
-                              "code": 1,
+                              "price": 1,
+                              "images": 1,
                               "status": 1,
-                              "available": 1,
-                              "active": 1,
-                              "category._id": 1,
-                              "category.name": 1
+                              "createdAt": 1,
+
                          }
                     }, { $addFields: { category: { $first: "$category" } } }]).toArray();
                return result;
@@ -205,12 +195,13 @@ export class ProductDalConc implements ProductDal {
                     tags: entity.tags,
 
                     //sell
+                    status: entity.status,
                     size: entity.size,
                     price: entity.price,
                     purchasePrice: entity.purchasePrice,
                     weight: entity.weight,
                     stock: entity.stock,
-                    color: entity.color,
+                    colors: entity.colors,
                     createdAt: Date.now()
                });
                return result;
