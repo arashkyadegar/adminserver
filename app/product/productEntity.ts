@@ -1,6 +1,11 @@
 var Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 
+export class ProductWbEntity {
+
+}
+
+
 export class ProductEntity {
      _id: string = "";
      //info

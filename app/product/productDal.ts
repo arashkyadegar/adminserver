@@ -161,7 +161,7 @@ export class ProductDalConc implements ProductDal {
                               "createdAt": 1,
 
                          }
-                    }, { $addFields: { category: { $first: "$category" } } }]).toArray();
+                    }, { $addFields: { category: { $first: "$category" } } }]).sort({ createdAt: -1 }).toArray();
                return result;
           } catch (err: any) {
                this.logger.logError(err, "getAll");

@@ -23,9 +23,9 @@ UploadRouter.post(
     const result: any = [];
 
     req.files.forEach((file: any) => {
-      result.push(file.filename);
+      result.push({ name: file.filename, status: false, alt: "" });
     });
-    //const fileName = validator.escape(req.file.filename);
+
     res.status(ResponseStatus.OK).send({
       files: result,
     });
@@ -36,7 +36,7 @@ UploadRouter.post(
   "/productLogo",
   [
     // checkAuthorize,
-     upload.single("files")],
+    upload.single("files")],
   function (req: any, res) {
     const result: any = [];
     const x = req.file;

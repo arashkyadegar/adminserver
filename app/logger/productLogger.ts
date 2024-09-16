@@ -104,6 +104,7 @@ export class ProductWbRouterClassLogger implements IBaseLogger {
      }
 }
 module.exports = {
+     ProductWbRouterClassLogger,
      ProductRouterClassLogger,
      ProductRouterLogger,
      ProductDalConcLogger
