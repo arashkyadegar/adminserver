@@ -1,8 +1,8 @@
-import { ProductWbEntity } from "../product/productEntity";
+import { ProductEntity, ProductWbEntity } from "../product/productEntity";
 import { ProductDalConcLogger } from "../logger/productLogger";
 import { MongoDb } from "../config/mongodb";
 import { parseToObjectId } from "../utility/objectIdParser";
-import { MysqlClient } from "../config/mysql";
+import { array } from "joi";
 var ObjectId = require("mongodb").ObjectId;
 export interface ProductWbDal {
   // updateOne(id: string, entity: ProductEntity): Promise<boolean>;
@@ -29,12 +29,11 @@ export class ProductWbDalConc implements ProductWbDal {
   }
 
   async findAll(): Promise<ProductWbEntity[]> {
-    let result;
+    let result = new Array<ProductWbEntity>();
+    
     try {
-
       const db = await MongoDb.dbconnect();
       result = await db.collection('products').aggregate([
-
         {
           $lookup: {
             from: "categories",
@@ -83,27 +82,4 @@ export class ProductWbDalConc implements ProductWbDal {
 
     return result;
   }
-}
-
-
-export class ProductWbDalConcSQl implements ProductWbDal {
-  findOne(id: string): Promise<ProductWbEntity> {
-    throw new Error("Method not implemented.");
-  }
-
-  async findAll(): Promise<any> {
-    let mysqlClient = new MysqlClient();
-    let connection = await mysqlClient.dbconnect();
-    connection.query('SELECT products.id as id,products.name as name,products.purchasePrice,products.category_id, products.weight,products.stock,products.colors,products.shortDesc,products.longDesc, products.brand_id,products.desc,products.keywords,products.status,products.tags,products.size,products.price , brands.id,brands.name,categories.id,categories.parent_id,categories.name,images.id,images.name,images.status FROM products INNER JOIN brands ON products.brand_id=brands.id INNER Join categories ON products.category_id=categories.id LEFT OUTER JOIN images ON products.id=images.product_id;',
-      function (error, results, fields) {
-        const x = JSON.parse(JSON.stringify(results))
-        console.log(x)
-        return results;
-      });
-  }
-
-  findByPage(page: number): Promise<ProductWbEntity[]> {
-    throw new Error("Method not implemented.");
-  }
-
 }

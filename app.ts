@@ -8,9 +8,7 @@ var app = express();
 
 var corsOptions = {
      //origin: "https://adminapp.liara.run",
-     origin: ["http://localhost:3000",
-          "https://adminapp-react.liara.run",
-          "https://shopapp.liara.run"],
+     origin: "http://localhost:3000",
      optionsSuccessStatus: 200,
      methods: "GET, PUT, POST, DELETE",
      //preflightContinue: true,

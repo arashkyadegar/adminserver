@@ -1,13 +1,13 @@
 import express from "express";
 import { ProductWbBusConc } from "./productWbBus";
-import { ProductWbDalConc, ProductWbDalConcSQl } from "./productWbDal";
+import { ProductWbDalConc } from "./productWbDal";
 import { ProductWbRouterClassLogger } from "../logger/productLogger";
 import { ProductWbRouterClass } from "./productWbRouterClass";
 export const ProductWbRouter = express.Router();
 
 ProductWbRouter.get("/", async function (req, res, next) {
   try {
-    const bus = new ProductWbBusConc(new ProductWbDalConcSQl());
+    const bus = new ProductWbBusConc(new ProductWbDalConc());
     const router = new ProductWbRouterClass(bus);
     const result = await router.findAll(req, res, next);
     return res.status(result.status).send(result.message);
@@ -34,10 +34,6 @@ ProductWbRouter.get("/:id", async function (req, res, next) {
 
 ProductWbRouter.put("/:id", async function (req, res, next) {
   try {
-    //   const bus = new PostBusConc(new PostDalConc());
-    //   const router = new PostRouterClass(bus);
-    //   const result = await router.findAll(req, res, next);
-
     return res.status(200).send({ payload: "hi this is me" });
   } catch (err: any) {
     const logger = new ProductWbRouterClassLogger();

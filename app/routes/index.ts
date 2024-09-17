@@ -2,7 +2,7 @@ var express = require("express");
 const CategoryRouter = require("../category/categoryRouter");
 const ProductWbRouter = require("../productWeb/productWbRouter");
 const ProductRouter = require("../product/productRouter");
-// const WalletRouter = require("../wallet/walletRouter");
+const HomeRouter = require("../home/homeRouter");
 // const WalletItemRouter = require("../walletItem/walletItemRouter");
 // const UserRouter = require("../user/userRouter");
 // const CustomerRouter = require("../customer/customerRouter");
@@ -12,7 +12,7 @@ const UploadRouter = require("../upload/uploadRouter");
 // const StoreWebRouter =require("../storeWeb/storeWebRouter")
 
 module.exports = function (app: any) {
-
+     app.use('/', HomeRouter);
      app.use('/categories', CategoryRouter);
      // app.use('/storesWeb', StoreWebRouter);
      // app.use('/stores', StoreRouter);

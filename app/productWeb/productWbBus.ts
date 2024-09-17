@@ -1,4 +1,7 @@
-import { ProductWbEntity } from "../product/productEntity";
+import { ImageBusConc } from "../image/imageBus";
+import { ImageWbDalConc } from "../image/imageDal";
+import { ImageWbEntity } from "../image/imageEntity";
+import { ProductEntity, ProductWbEntity } from "../product/productEntity";
 import { ProductWbDal } from "./productWbDal";
 // import { checkLikesByUser } from "../likeWeb/likeWbUtility";
 // import { calculateScore } from "../scoreWeb/scoreWbUtility";
@@ -24,14 +27,6 @@ export class ProductWbBusConc implements ProductWbBus {
   async findAll(): Promise<ProductWbEntity[]> {
     const today = new Date();
     const result = await this.db.findAll();
-    // result.forEach((element) => {
-    //   element.score = calculateScore(element);
-    //   if (element.discounts.length > 0) {
-    //     let discount = _.first(element.discounts);
-    //     let temp = checkIfDiscountIsAllowed(discount);
-    //     element.discounts = temp;
-    //   }
-    // });
     return result;
   }
   async findOne(id: string): Promise<ProductWbEntity> {
