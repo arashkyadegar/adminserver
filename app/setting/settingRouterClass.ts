@@ -14,7 +14,6 @@ export class SettingRouterClass {
   }
 
   async findOne(req, res, next) {
-    console.log('hello');
     let result;
     if (req.params.id === undefined) {
       const errorResponse = `validation failed. id is not provided`;
@@ -25,17 +24,8 @@ export class SettingRouterClass {
       };
     }
 
-    if (!validator.isMongoId(req.params.id.toString())) {
-      const errorResponse = `validation failed. id is not valid`;
-      this.logger.logError(errorResponse, "findOne");
-      return {
-        status: ResponseStatus.BAD_REQUEST,
-        message: errorResponse,
-      };
-    }
-
     let id = req.params.id;
-    result = await this.bus.findOne(id);
+    result = await this.bus.findOne('1');
 
     if (result === undefined) {
       const errorResponse = `item not found.`;
@@ -64,14 +54,6 @@ export class SettingRouterClass {
       };
     }
 
-    if (!validator.isMongoId(req.params.id.toString())) {
-      const errorResponse = `validation failed. id is not valid`;
-      this.logger.logError(errorResponse, "updateOne");
-      return {
-        status: ResponseStatus.BAD_REQUEST,
-        message: errorResponse,
-      };
-    }
 
     let id = req.params.id;
     const SettingEntity = req.body as SettingEntity;
@@ -85,7 +67,7 @@ export class SettingRouterClass {
       };
     }
 
-    result = await this.bus.updateOne(id, SettingEntity);
+    result = await this.bus.updateOne('1', SettingEntity);
     if (result === undefined) {
       const errorResponse = `item not found.`;
       this.logger.logError(errorResponse, "updateOne");

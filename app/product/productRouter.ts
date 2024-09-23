@@ -25,6 +25,7 @@ ProductRouter.get("/search", async function (req, res, next) {
           const bus = new ProductBusConc(new ProductDalConc());
           const router = new ProductRouterClass(bus);
           const result = await router.search(req, res, next);
+
           return res.status(result.status).send(result.message);
      } catch (err: any) {
           const logger = new ProductRouterLogger();

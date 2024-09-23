@@ -12,7 +12,7 @@ export class SettingBusConc implements SettingBus {
     this.db = db;
   }
   async findOne(id: string): Promise<SettingEntity> {
-    const result = await this.db.findOne(id);
+    const result = await this.db.findOne();
     return result;
   }
   async updateOne(id: string, entity: SettingEntity): Promise<boolean> {

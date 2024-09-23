@@ -6,15 +6,26 @@ require('dotenv').config();
 const bodyParser = require("body-parser");
 var app = express();
 
+//////////////////
+var allowlist = [
+  'https://arashkyadegar.ir',
+  'http://arashkyadegar.ir',
+  'https://adminapp.arashkyadegar.ir',
+  'http://adminapp.arashkyadegar.ir',
+  'http://localhost:3000',
+  'http://localhost:3001'
+];
 var corsOptions = {
-     //origin: "https://adminapp.liara.run",
-     origin: "http://localhost:3000",
-     optionsSuccessStatus: 200,
-     methods: "GET, PUT, POST, DELETE",
-     //preflightContinue: true,
-     credentials: true,
+  //  origin: "https://nextjs-lopencandy.iran.liara.run",
+    origin:  'http://localhost:3000',
+  optionsSuccessStatus: 200,
+  methods: "GET, PUT, POST, DELETE",
+  //preflightContinue: true,
+  credentials: true,
 };
-app.use(cors(corsOptions));
+app.use(cors());
+////////////////////
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(__dirname + "./public"));
@@ -23,7 +34,7 @@ app.use(express.static(path.resolve("./public")));
 
 require("./app/routes/index")(app);
 app.listen(process.env.PORT, () => {
-     console.log(`server listening at port ${process.env.PORT}`);
+  console.log(`server listening at port ${process.env.PORT}`);
 })
 
 module.exports = app; //uncomment for supertest run

@@ -2,9 +2,8 @@
   "name": "adminserver",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -w",
     "start": "node dist/app.js",
     "test": "mocha"
   },

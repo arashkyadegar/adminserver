@@ -5,7 +5,7 @@ import { SettingEntity } from "./settingEntity";
 
 export interface SettingDal {
   updateOne(id: string, entity: SettingEntity): Promise<boolean>;
-  findOne(id: string): Promise<SettingEntity>;
+  findOne(): Promise<SettingEntity>;
 }
 export class SettingDalConc implements SettingDal {
   logger: any;
@@ -16,7 +16,7 @@ export class SettingDalConc implements SettingDal {
     let result;
     try {
       const db = await MongoDb.dbconnect();
-      result = await db.collection('products').updateOne(
+      result = await db.collection('settings').updateOne(
         { _id: "1" },
 
         {
@@ -24,7 +24,8 @@ export class SettingDalConc implements SettingDal {
             slideImages: entity.slideImages,
             updatedAt: Date.now()
           },
-        });
+        },
+        { upsert: true });
       return result;
     } catch (err: any) {
       this.logger.logError(err, "updateOne");
@@ -34,7 +35,7 @@ export class SettingDalConc implements SettingDal {
       return result;
     }
   }
-  async findOne(id: string): Promise<SettingEntity> {
+  async findOne(): Promise<SettingEntity> {
     let result;
     try {
       const db = await MongoDb.dbconnect();

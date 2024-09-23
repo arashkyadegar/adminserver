@@ -125,7 +125,7 @@ export class CategoryDalConc implements CategoryDal {
                });
                return result;
           } catch (err: any) {
-               console.log(err);
+               this.logger.logError(err, "createOne");
           } finally {
                MongoDb.dbclose();
           }

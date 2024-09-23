@@ -26,12 +26,12 @@ export const CategorySchema = Joi.object({
   pageTitle: Joi.string(),
   menuTitle: Joi.string(),
   parentCategoryId: Joi.string(),
-  desc: Joi.string(),
+  desc: Joi.string().allow(""),
   keywords: Joi.array(),
-  upDesc: Joi.string(),
-  downDesc: Joi.string(),
-  icon: Joi.string(),
-  image: Joi.string(),
+  upDesc: Joi.string().allow(""),
+  downDesc: Joi.string().allow(""),
+  icon: Joi.string().allow(""),
+  image: Joi.string().allow(""),
 
   createdAt: Joi.string().allow(""),
   updatedAt: Joi.string().allow("")
