@@ -7,6 +7,21 @@ import { CategoryRouterClass } from "./categoryRouterClass";
 
 export const CategoryRouter = express.Router();
 
+CategoryRouter.get("/findAllGraph", async function (req, res, next) {
+  try {
+    console.log('hi')
+    const bus = new CategoryBusConc(new CategoryDalConc());
+    const router = new CategoryRouterClass(bus);
+    const result = await router.findAllGraph(req, res, next);
+    return res.status(result.status).send(result.message);
+  } catch (err: any) {
+    const logger = new CategoryRouterLogger();
+    logger.logError(err, "get /graph");
+    next(err);
+  }
+});
+
+
 CategoryRouter.get("/search", async function (req, res, next) {
   try {
     const bus = new CategoryBusConc(new CategoryDalConc());
@@ -19,6 +34,7 @@ CategoryRouter.get("/search", async function (req, res, next) {
     next(err);
   }
 });
+
 
 CategoryRouter.get("/",  async function (req, res, next) {
   try {
@@ -33,6 +49,7 @@ CategoryRouter.get("/",  async function (req, res, next) {
   }
 });
 
+
 CategoryRouter.get("/:id", async function (req, res, next) {
   try {
     const bus = new CategoryBusConc(new CategoryDalConc());
@@ -46,6 +63,7 @@ CategoryRouter.get("/:id", async function (req, res, next) {
   }
 });
 
+
 CategoryRouter.delete("/:id",  async function (req, res, next) {
   try {
     const bus = new CategoryBusConc(new CategoryDalConc());
@@ -58,6 +76,7 @@ CategoryRouter.delete("/:id",  async function (req, res, next) {
     next(err);
   }
 });
+
 
 CategoryRouter.put("/:id",  async function (req, res, next) {
   try {

@@ -12,12 +12,36 @@ export interface CategoryDal {
      createOne(entity: CategoryEntity): Promise<boolean>;
      updateOne(id: string, entity: CategoryEntity): Promise<any>;
      deleteOne(id: string): Promise<boolean>;
+     findAllGraph(): Promise<any>;
 }
 
 export class CategoryDalConc implements CategoryDal {
      logger: IBaseLogger;
      constructor() {
           this.logger = new CategoryDalConcLogger();
+     }
+     async findAllGraph(): Promise<any> {
+          try {
+               let result;
+               const db = await MongoDb.dbconnect();
+               result = await db.collection('categories').aggregate([
+                    {
+                         "$graphLookup": {
+                              "from": "categories",
+                              "startWith": "$id",
+                              "connectFromField": "parent",
+                              "connectToField": "parent",
+                              "as": "children",
+                              "depthField": "depth"
+                         }
+                    }
+               ]);
+               return result;
+          } catch (err: any) {
+               this.logger.logError(err, "search");
+          } finally {
+               MongoDb.dbclose();
+          }
      }
      async search(name: string): Promise<any> {
           try {
@@ -39,7 +63,7 @@ export class CategoryDalConc implements CategoryDal {
           } catch (err: any) {
                this.logger.logError(err, "search");
           } finally {
-               MongoDb.dbclose();
+                MongoDb.dbclose();
           }
      }
 
@@ -55,7 +79,7 @@ export class CategoryDalConc implements CategoryDal {
                               name: entity.name,
                               pageTitle: entity.pageTitle,
                               menuTitle: entity.menuTitle,
-                              parentCategoryId: entity.parentCategoryId,
+                              parentCategoryId: entity.parent,
                               desc: entity.desc,
                               keywords: entity.keywords,
                               upDesc: entity.upDesc,
@@ -97,7 +121,7 @@ export class CategoryDalConc implements CategoryDal {
 
                const db = await MongoDb.dbconnect();
                result = await db.collection('categories').find()
-               .sort({ createdAt: -1 }).toArray();
+                    .sort({ createdAt: -1 }).toArray();
                return result;
           } catch (err: any) {
                this.logger.logError(err, "getAll");
@@ -112,15 +136,17 @@ export class CategoryDalConc implements CategoryDal {
                const db = await MongoDb.dbconnect();
                const result = await db.collection('categories').insertOne({
                     name: entity.name,
+                    id: entity.id,
                     pageTitle: entity.pageTitle,
                     menuTitle: entity.menuTitle,
-                    parentCategoryId: entity.parentCategoryId,
+                    parent: entity.parent,
                     desc: entity.desc,
                     keywords: entity.keywords,
                     upDesc: entity.upDesc,
                     downDesc: entity.downDesc,
                     icon: entity.icon,
                     image: entity.image,
+                    children:entity.children,
                     createdAt: Date.now(),
                });
                return result;

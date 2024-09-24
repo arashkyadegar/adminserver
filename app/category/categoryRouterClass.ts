@@ -1,5 +1,6 @@
 import { CategoryRouterClassLogger } from "../logger/categoryLogger";
 import { ResponseStatus } from "../utility/errorStatus";
+import { TreeView } from "../utility/tree-view";
 import { CategoryBus } from "./categoryBus";
 import { CategoryEntity, CategorySchema } from "./categoryEntity";
 import validator from "validator";
@@ -13,19 +14,31 @@ export class CategoryRouterClass {
   }
 
   async findAll(req, res, next): Promise<any> {
-      const result = await this.bus.findAll();
-      return {
-        status: ResponseStatus.OK,
-        message: result,
-      };
-    
+    const result = await this.bus.findAll();
+    return {
+      status: ResponseStatus.OK,
+      message: result,
+    };
+
   }
 
 
+  async findAllGraph(req, res, next): Promise<any> {
+    const results = await this.bus.findAllGraph();
+
+    return {
+      status: ResponseStatus.OK,
+      message: results,
+    };
+
+  }
+
+
+
   async search(req, res, next): Promise<any> {
-    if (req.query.name ) {
+    if (req.query.name) {
       const name = req.query.name
-      const result = await this.bus.search( name);
+      const result = await this.bus.search(name);
       return {
         status: ResponseStatus.OK,
         message: result,

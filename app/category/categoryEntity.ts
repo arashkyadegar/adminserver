@@ -3,11 +3,12 @@ Joi.objectId = require("joi-objectid")(Joi);
 
 export class CategoryEntity {
   _id: string = "";
-
+  id: number = 0;
   name: string = "";
   pageTitle: string = "";
   menuTitle: string = "";
-  parentCategoryId: string = "";
+  parent: number = 0;
+  children: Array<CategoryEntity> = [];
   desc: string = "";
   keywords: string[] = [];
   upDesc: string = "";
@@ -21,11 +22,12 @@ export class CategoryEntity {
 
 export const CategorySchema = Joi.object({
   _id: Joi.objectId().allow(""),
-
+  id: Joi.number(),
+  children: Joi.array(),
   name: Joi.string(),
   pageTitle: Joi.string(),
   menuTitle: Joi.string(),
-  parentCategoryId: Joi.string(),
+  parent: Joi.number(),
   desc: Joi.string().allow(""),
   keywords: Joi.array(),
   upDesc: Joi.string().allow(""),

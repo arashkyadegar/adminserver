@@ -6,6 +6,8 @@ import { ProductRouterClass } from "./productRouterClass";
 
 export const ProductRouter = express.Router();
 
+
+
 ProductRouter.get("/abbrev", async function (req, res, next) {
      try {
           const bus = new ProductBusConc(new ProductDalConc());

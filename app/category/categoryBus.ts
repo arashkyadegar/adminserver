@@ -8,12 +8,23 @@ export interface CategoryBus {
   createOne(entity: CategoryEntity): Promise<CategoryEntity>;
   deleteOne(id: string): Promise<boolean>;
   findAll(): Promise<CategoryEntity[]>;
+  findAllGraph(): Promise<any>;
+
 }
 
 export class CategoryBusConc implements CategoryBus {
   private db: CategoryDal;
   constructor(db: CategoryDal) {
     this.db = db;
+  }
+
+  async findAllGraph(): Promise<any> {
+    const results = await this.db.findAll();
+    const nest = (results, id = 0, link = 'parent') =>
+      results.filter((item: any) => item.parent === id)
+        .map(item => ({ ...item, children: nest(results, item.id) }));
+    const tree = nest(results)
+    return tree;
   }
   async search(name: string): Promise<CategoryEntity[]> {
     const result = await this.db.search(name);
