@@ -1,4 +1,6 @@
 var express = require("express");
+const BrandWbRouter = require("../brandWeb/brandWbRouter");
+const BrandRouter = require("../brand/brandRouter");
 const CategoryRouter = require("../category/categoryRouter");
 const CategoryWbRouter = require("../categoryWeb/categoryWbRouter");
 const ProductWbRouter = require("../productWeb/productWbRouter");
@@ -12,6 +14,8 @@ const SettingWbRouter = require("../settingWeb/settingWbRouter");
 module.exports = function (app: any) {
      app.use('/', HomeRouter);
      app.use('/categories', CategoryRouter);
+     app.use('/brands', BrandRouter);
+     app.use('/api/wbbrands', BrandWbRouter);
      app.use('/api/wbcategories', CategoryWbRouter);
      app.use("/api/wbproducts", ProductWbRouter);
      app.use('/products', ProductRouter);

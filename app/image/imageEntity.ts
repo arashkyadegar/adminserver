@@ -4,7 +4,6 @@ export class ImageWbEntity {
   product_id: number = 0;
   imageAlt: string = "";
   imageStatus: boolean = false;
-
 }
 
 module.exports = {
