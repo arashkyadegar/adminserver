@@ -20,6 +20,7 @@ export class CategoryEntity {
   updatedAt: Date | undefined;
 }
 
+
 export const CategorySchema = Joi.object({
   _id: Joi.objectId().allow(""),
   id: Joi.number(),

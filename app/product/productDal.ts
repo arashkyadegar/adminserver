@@ -68,6 +68,7 @@ export class ProductDalConc implements ProductDal {
                               images: entity.images,
                               shortDesc: entity.shortDesc,
                               longdesc: entity.longdesc,
+                              extras: entity.extras,
                               weakPoints: entity.weakPoints,
                               strongPoints: entity.strongPoints,
 
@@ -186,7 +187,7 @@ export class ProductDalConc implements ProductDal {
                     longdesc: entity.longdesc,
                     weakPoints: entity.weakPoints,
                     strongPoints: entity.strongPoints,
-
+                    extras: entity.extras,
                     //seo
                     pageTitle: entity.pageTitle,
                     pageLink: entity.pageLink,

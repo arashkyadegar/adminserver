@@ -6,7 +6,7 @@ import { parseToObjectId } from "../utility/objectIdParser";
 
 
 export interface CategoryDal {
-     findAll(): Promise<any>;
+     findAll(): Promise<CategoryEntity[]>;
      findOne(id: string): Promise<any>;
      search(name: string): Promise<any>;
      createOne(entity: CategoryEntity): Promise<boolean>;
@@ -63,7 +63,7 @@ export class CategoryDalConc implements CategoryDal {
           } catch (err: any) {
                this.logger.logError(err, "search");
           } finally {
-                MongoDb.dbclose();
+               MongoDb.dbclose();
           }
      }
 
@@ -115,7 +115,7 @@ export class CategoryDalConc implements CategoryDal {
 
      }
 
-     async findAll(): Promise<any> {
+     async findAll(): Promise<CategoryEntity[]> {
           let result;
           try {
 
@@ -146,7 +146,8 @@ export class CategoryDalConc implements CategoryDal {
                     downDesc: entity.downDesc,
                     icon: entity.icon,
                     image: entity.image,
-                    children:entity.children,
+                    children: entity.children,
+                    active: false, //extra field for front-end redux use
                     createdAt: Date.now(),
                });
                return result;

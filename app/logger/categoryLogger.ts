@@ -106,5 +106,9 @@ export class CategoryWbRouterClassLogger implements IBaseLogger {
 module.exports = {
      CategoryRouterClassLogger,
      CategoryRouterLogger,
-     CategoryDalConcLogger
+     CategoryDalConcLogger,
+     CategoryWbRouterLogger,
+     CategoryWbDalLogger,
+     CategoryWbRouterClassLogger,
+
 }

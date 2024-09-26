@@ -5,6 +5,10 @@ export class ProductWbEntity {
 
 }
 
+export class ExtraEntity {
+     name: string = "";
+     value: string = "";
+}
 
 export class ProductEntity {
      _id: string = "";
@@ -18,6 +22,7 @@ export class ProductEntity {
      longdesc: string = "";
      weakPoints: string[] = [];
      strongPoints: string[] = [];
+     extras: ExtraEntity[] = [];
 
      //seo
      pageTitle: string = ""
@@ -54,7 +59,7 @@ export const ProductSchema = Joi.object({
      longdesc: Joi.string().allow(""),
      weakPoints: Joi.array(),
      strongPoints: Joi.array(),
-
+     extras: Joi.array(),
 
      pageTitle: Joi.string().allow(""),
      pageLink: Joi.string().allow(""),

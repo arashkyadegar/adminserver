@@ -10,6 +10,7 @@ export interface CategoryBus {
   findAll(): Promise<CategoryEntity[]>;
   findAllGraph(): Promise<any>;
 
+
 }
 
 export class CategoryBusConc implements CategoryBus {
@@ -17,6 +18,7 @@ export class CategoryBusConc implements CategoryBus {
   constructor(db: CategoryDal) {
     this.db = db;
   }
+
 
   async findAllGraph(): Promise<any> {
     const results = await this.db.findAll();
@@ -36,6 +38,8 @@ export class CategoryBusConc implements CategoryBus {
   }
 
   async createOne(entity: CategoryEntity): Promise<any> {
+    const list = await this.db.findAll();
+    entity.id = list.length + 1;
     const result = await this.db.createOne(entity);
     return result;
   }

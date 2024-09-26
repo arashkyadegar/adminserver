@@ -9,7 +9,6 @@ export const CategoryRouter = express.Router();
 
 CategoryRouter.get("/findAllGraph", async function (req, res, next) {
   try {
-    console.log('hi')
     const bus = new CategoryBusConc(new CategoryDalConc());
     const router = new CategoryRouterClass(bus);
     const result = await router.findAllGraph(req, res, next);
