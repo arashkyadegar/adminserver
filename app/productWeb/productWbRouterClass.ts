@@ -12,21 +12,22 @@ export class ProductWbRouterClass {
   }
 
   async search(req, res, next): Promise<any> {
-    console.log('hello search');
+    
     let name = "";
     let pricemin = 0;
     let pricemax = 10000000;
+    let brandItems = [];
     let options: any = [];
-    if (req.query.category != undefined) {
-      console.log(`category = ${req.query.category}`)
-    }
+
 
     if (req.query.name != undefined) {
       name = req.query.name;
-
+      options.name = ({ $match: { name: { $regex: name, $options: "i" } } })
+    } else {
+      options.name = ({ $match: { name: { $exists: true } } })
     }
 
-    options.name = ({ $match: { name: { $regex: name, $options: "i" } } })
+
 
     if (req.query.pricemax != undefined) {
       pricemax = parseInt(req.query.pricemax);
@@ -41,23 +42,16 @@ export class ProductWbRouterClass {
 
     options.pricemin = ({ $match: { price: { $gte: pricemin } } });
 
-    // if (req.query.pricemin != undefined) {
-    //   pricemin = req.query.pricemin;
-    // }
-
-    // options.push({ $match: { price: { $gte: pricemin } } });
-
-
 
     if (req.query.brand != undefined) {
-      console.log(`brand = ${req.query.brand}`)
-      options.brand = req.query.brand;
+
+      brandItems = (req.query.brand).split("_");;
+      options.brand = ({ $match: { brand: { $in: brandItems } } });
+    } else {
+      options.brand = ({ $match: { brand: { $exists: true } } });
     }
 
-    if (req.query.images != undefined) {
-      console.log(`images = ${req.query.images}`)
-    }
-    console.log(options);
+
     const result = await this.bus.search(options);
     return {
       status: ResponseStatus.OK,

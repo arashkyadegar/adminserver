@@ -23,7 +23,8 @@ export class ProductWbDalConc implements ProductWbDal {
       result = await db.collection('products').aggregate([
         options.name,
         options.pricemax,
-        options.pricemin,
+        // options.pricemin,
+        options.brand,
         {
           $lookup: {
             from: "categories",
@@ -40,6 +41,7 @@ export class ProductWbDalConc implements ProductWbDal {
             "images": 1,
             "status": 1,
             "createdAt": 1,
+            "brand": 1
           }
         }, { $addFields: { category: { $first: "$category" } } }]).toArray();
     } catch (err: any) {
