@@ -11,6 +11,60 @@ export class ProductWbRouterClass {
     this.logger = new ProductWbRouterClassLogger();
   }
 
+  async search(req, res, next): Promise<any> {
+    console.log('hello search');
+    let name = "";
+    let pricemin = 0;
+    let pricemax = 10000000;
+    let options: any = [];
+    if (req.query.category != undefined) {
+      console.log(`category = ${req.query.category}`)
+    }
+
+    if (req.query.name != undefined) {
+      name = req.query.name;
+
+    }
+
+    options.name = ({ $match: { name: { $regex: name, $options: "i" } } })
+
+    if (req.query.pricemax != undefined) {
+      pricemax = parseInt(req.query.pricemax);
+    }
+
+    options.pricemax = ({ $match: { price: { $lte: pricemax } } });
+
+
+    if (req.query.pricemin != undefined) {
+      pricemin = parseInt(req.query.pricemin);
+    }
+
+    options.pricemin = ({ $match: { price: { $gte: pricemin } } });
+
+    // if (req.query.pricemin != undefined) {
+    //   pricemin = req.query.pricemin;
+    // }
+
+    // options.push({ $match: { price: { $gte: pricemin } } });
+
+
+
+    if (req.query.brand != undefined) {
+      console.log(`brand = ${req.query.brand}`)
+      options.brand = req.query.brand;
+    }
+
+    if (req.query.images != undefined) {
+      console.log(`images = ${req.query.images}`)
+    }
+    console.log(options);
+    const result = await this.bus.search(options);
+    return {
+      status: ResponseStatus.OK,
+      message: result,
+    };
+  }
+
   async findAll(req, res, next): Promise<any> {
     const result = await this.bus.findAll();
     return {

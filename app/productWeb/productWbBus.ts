@@ -13,12 +13,17 @@ export interface ProductWbBus {
   findOne(id: string): Promise<ProductWbEntity>;
   findAll(): Promise<ProductWbEntity[]>;
   findByPage(page: number): Promise<ProductWbEntity[]>;
+  search(options: any): Promise<ProductWbEntity[]>;
 }
 
 export class ProductWbBusConc implements ProductWbBus {
   private db: ProductWbDal;
   constructor(db: ProductWbDal) {
     this.db = db;
+  }
+  async search(options: any): Promise<ProductWbEntity[]> {
+    const result = await this.db.search(options);
+    return result;
   }
   async findByPage(page: number): Promise<ProductWbEntity[]> {
     const result = await this.db.findByPage(page);

@@ -9,11 +9,43 @@ export interface ProductWbDal {
   findOne(id: string,): Promise<ProductWbEntity>;
   findAll(): Promise<ProductWbEntity[]>;
   findByPage(page: number): Promise<ProductWbEntity[]>;
+  search(options: any): Promise<ProductWbEntity[]>;
 }
 export class ProductWbDalConc implements ProductWbDal {
   logger: any;
   constructor() {
     this.logger = new ProductDalConcLogger();
+  }
+  async search(options: any): Promise<ProductWbEntity[]> {
+    let result;
+    try {
+      const db = await MongoDb.dbconnect();
+      result = await db.collection('products').aggregate([
+        options.name,
+        options.pricemax,
+        options.pricemin,
+        {
+          $lookup: {
+            from: "categories",
+            localField: "categoryId",
+            foreignField: "_id",
+            as: "category",
+          }
+        }, {
+          $project: {
+            "_id": 1,
+            "name": 1,
+            "stock": 1,
+            "price": 1,
+            "images": 1,
+            "status": 1,
+            "createdAt": 1,
+          }
+        }, { $addFields: { category: { $first: "$category" } } }]).toArray();
+    } catch (err: any) {
+      this.logger.logError(err, "findOne");
+    }
+    return result;
   }
 
   async findOne(id: string,): Promise<ProductWbEntity> {
@@ -30,7 +62,7 @@ export class ProductWbDalConc implements ProductWbDal {
 
   async findAll(): Promise<ProductWbEntity[]> {
     let result = new Array<ProductWbEntity>();
-    
+
     try {
       const db = await MongoDb.dbconnect();
       result = await db.collection('products').aggregate([
