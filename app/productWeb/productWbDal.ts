@@ -19,12 +19,13 @@ export class ProductWbDalConc implements ProductWbDal {
   async search(options: any): Promise<ProductWbEntity[]> {
     let result;
     try {
+
       const db = await MongoDb.dbconnect();
       result = await db.collection('products').aggregate([
         options.name,
-        options.pricemax,
-        // options.pricemin,
-        options.brand,
+        options.priceMax,
+        options.priceMin,
+        options.brands,
         {
           $lookup: {
             from: "categories",

@@ -12,43 +12,49 @@ export class ProductWbRouterClass {
   }
 
   async search(req, res, next): Promise<any> {
-    
+
     let name = "";
-    let pricemin = 0;
-    let pricemax = 10000000;
-    let brandItems = [];
+    let priceMin = 0;
+    let priceMax = 10000000;
+    let brands = [];
     let options: any = [];
 
 
+
     if (req.query.name != undefined) {
-      name = req.query.name;
-      options.name = ({ $match: { name: { $regex: name, $options: "i" } } })
+      if (req.query.name.trim() !== "") {
+        name = req.query.name;
+        options.name = ({ $match: { name: { $regex: name, $options: "i" } } })
+      } else {
+        options.name = ({ $match: { name: { $exists: true } } })
+      }
     } else {
       options.name = ({ $match: { name: { $exists: true } } })
     }
 
-
-
-    if (req.query.pricemax != undefined) {
-      pricemax = parseInt(req.query.pricemax);
+    if (req.query.priceMax != undefined) {
+      priceMax = parseInt(req.query.priceMax);
     }
 
-    options.pricemax = ({ $match: { price: { $lte: pricemax } } });
+    options.priceMax = ({ $match: { price: { $lte: priceMax } } });
 
 
-    if (req.query.pricemin != undefined) {
-      pricemin = parseInt(req.query.pricemin);
+    if (req.query.priceMin != undefined) {
+      priceMin = parseInt(req.query.priceMin);
     }
 
-    options.pricemin = ({ $match: { price: { $gte: pricemin } } });
+    options.priceMin = ({ $match: { price: { $gte: priceMin } } });
 
 
-    if (req.query.brand != undefined) {
-
-      brandItems = (req.query.brand).split("_");;
-      options.brand = ({ $match: { brand: { $in: brandItems } } });
+    if (req.query.brands != undefined) {
+      if (req.query.brands.trim() != "") {
+        brands = (req.query.brands).split(",");;
+        options.brands = ({ $match: { brand: { $in: brands } } });
+      } else {
+        options.brands = ({ $match: { brand: { $exists: true } } });
+      }
     } else {
-      options.brand = ({ $match: { brand: { $exists: true } } });
+      options.brands = ({ $match: { brand: { $exists: true } } });
     }
 
 
