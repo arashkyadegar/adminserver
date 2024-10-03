@@ -1,11 +1,18 @@
 import express from "express";
 import { HomeRouterLogger } from "../logger/homeLogger";
-// import { checkAuthorize } from "../middleware/authorize";
+import { ProductWbBusConc } from "../productWeb/productWbBus";
+import { ProductWbDalConc } from "../productWeb/productWbDal";
+import { CategoryWbDalConc } from "../categoryWeb/categoryWbDal";
+import { CategoryWbBusConc } from "../categoryWeb/categoryWbBus";
+import { BrandWbDalConc } from "../brandWeb/brandWbDal";
+import { BrandWbBusConc } from "../brandWeb/brandWbBus";
+import { SettingWbDalConc } from "../settingWeb/settingWbDal";
+import { SettingWbBusConc } from "../settingWeb/settingWbBus";
 
-export const CategoryRouter = express.Router();
+export const HomeRouter = express.Router();
 
 
-CategoryRouter.get("/",  async function (req, res, next) {
+HomeRouter.get("/", async function (req, res, next) {
   try {
     return res.status(200).send('this is home arashk!');
   } catch (err: any) {
@@ -15,4 +22,23 @@ CategoryRouter.get("/",  async function (req, res, next) {
   }
 });
 
-module.exports = CategoryRouter;
+HomeRouter.get("/init", async function (req, res, next) {
+  try {
+    const productWb_bus = new ProductWbBusConc(new ProductWbDalConc());
+    const cateroyWb_bus = new CategoryWbBusConc(new CategoryWbDalConc());
+    const brandWb_bus = new BrandWbBusConc(new BrandWbDalConc());
+    const settingWb_bus = new SettingWbBusConc(new SettingWbDalConc());
+
+    const settings = await settingWb_bus.findOne("1");
+    const products = await productWb_bus.findAll();
+    const brands = await brandWb_bus.findAll();
+    const categories = await cateroyWb_bus.findAllGraph();
+    return res.status(200).send({ settings, products, brands, categories });
+  } catch (err: any) {
+    const logger = new HomeRouterLogger();
+    logger.logError(err, "get /");
+    next(err);
+  }
+});
+
+module.exports = HomeRouter;

@@ -36,6 +36,7 @@ export class ProductEntity {
      size: string = "";
      price: number = 0;
      purchasePrice: number = 0;
+     discount: number = 0;
      weight: string = "";
      stock: string = "";
      colors: string[] = [];
@@ -70,6 +71,7 @@ export const ProductSchema = Joi.object({
      status: Joi.number().allow(""),
      size: Joi.string().allow(""),
      price: Joi.number().allow(""),
+     discount: Joi.number().allow(""),
      purchasePrice: Joi.number().allow(""),
      weight: Joi.string().allow(""),
      stock: Joi.string().allow(""),
