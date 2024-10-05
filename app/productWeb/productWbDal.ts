@@ -40,6 +40,7 @@ export class ProductWbDalConc implements ProductWbDal {
             "stock": 1,
             "price": 1,
             "images": 1,
+            "discount": 1,
             "status": 1,
             "createdAt": 1,
             "brand": 1
@@ -80,6 +81,7 @@ export class ProductWbDalConc implements ProductWbDal {
           $project: {
             "_id": 1,
             "name": 1,
+            "discount": 1,
             "stock": 1,
             "price": 1,
             "images": 1,

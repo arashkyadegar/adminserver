@@ -19,7 +19,7 @@ export class SettingWbDalConc implements SettingWbDal {
       result = await db.collection('settings').find().toArray();
       return result
     } catch (err: any) {
-      this.logger.logError(err, "updateOne");
+      this.logger.logError(err, "findOne");
       return result;
     } finally {
       MongoDb.dbclose();
