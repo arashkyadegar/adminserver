@@ -103,6 +103,111 @@ export class FaqWbRouterClassLogger implements IBaseLogger {
           instance.info(err);
      }
 }
+
+
+export class FaqGroupDalConcLogger implements IBaseLogger {
+     logger: WinstonLogger;
+     constructor() {
+          this.logger = new WinstonLogger("FaqGroupDal");
+     }
+     logError(err: string, method: string): void {
+          const instance = this.logger.getLogger(method);
+          instance.error(err);
+     }
+     logInfo(err: string, method: string): void {
+          const instance = this.logger.getLogger(method);
+          instance.info(err);
+     }
+}
+
+
+export class FaqGroupRouterLogger implements IBaseLogger {
+     logger: WinstonLogger;
+     constructor() {
+          this.logger = new WinstonLogger("FaqGroupRouter");
+     }
+
+     logError(err: string, method: string): void {
+          const instance = this.logger.getLogger(method);
+          instance.error(err);
+     }
+     logInfo(err: string, method: string): void {
+          const instance = this.logger.getLogger(method);
+          instance.info(err);
+     }
+}
+
+
+export class FaqGroupRouterClassLogger implements IBaseLogger {
+     logger: WinstonLogger;
+     constructor() {
+          this.logger = new WinstonLogger("FaqGroupRouterClass");
+     }
+
+     logError(err: string, method: string): void {
+          const instance = this.logger.getLogger(method);
+          instance.error(err);
+     }
+
+     logInfo(err: string, method: string): void {
+          const instance = this.logger.getLogger(method);
+          instance.info(err);
+     }
+}
+
+
+
+export class FaqGroupWbDalLogger implements IBaseLogger {
+     logger: WinstonLogger;
+     constructor() {
+          this.logger = new WinstonLogger("FaqGroupWbDal");
+     }
+     logError(err: string, method: string): void {
+          const instance = this.logger.getLogger(method);
+          instance.error(err);
+     }
+     logInfo(err: string, method: string): void {
+          const instance = this.logger.getLogger(method);
+          instance.info(err);
+     }
+}
+
+
+export class FaqGroupWbRouterLogger implements IBaseLogger {
+     logger: WinstonLogger;
+     constructor() {
+          this.logger = new WinstonLogger("FaqGroupWbRouter");
+     }
+
+     logError(err: string, method: string): void {
+          const instance = this.logger.getLogger(method);
+          instance.error(err);
+     }
+     logInfo(err: string, method: string): void {
+          const instance = this.logger.getLogger(method);
+          instance.info(err);
+     }
+}
+
+
+export class FaqGroupWbRouterClassLogger implements IBaseLogger {
+     logger: WinstonLogger;
+     constructor() {
+          this.logger = new WinstonLogger("FaqGroupWbRouterClass");
+     }
+
+     logError(err: string, method: string): void {
+          const instance = this.logger.getLogger(method);
+          instance.error(err);
+     }
+
+     logInfo(err: string, method: string): void {
+          const instance = this.logger.getLogger(method);
+          instance.info(err);
+     }
+}
+
+
 module.exports = {
      FaqRouterClassLogger,
      FaqRouterLogger,
@@ -110,5 +215,11 @@ module.exports = {
      FaqWbRouterLogger,
      FaqWbDalLogger,
      FaqWbRouterClassLogger,
+     FaqGroupDalConcLogger,
+     FaqGroupRouterLogger,
+     FaqGroupRouterClassLogger,
+     FaqGroupWbDalLogger,
+     FaqGroupWbRouterLogger,
+     FaqGroupWbRouterClassLogger,
 
 }

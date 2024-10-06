@@ -7,12 +7,17 @@ export interface FaqBus {
   createOne(entity: FaqEntity): Promise<boolean>;
   deleteOne(id: string): Promise<boolean>;
   findAll(): Promise<FaqEntity[]>;
+  findAllByGroup(groupId: string): Promise<FaqEntity[]>;
 }
 
 export class FaqBusConc implements FaqBus {
   private db: FaqDal;
   constructor(db: FaqDal) {
     this.db = db;
+  }
+  async findAllByGroup(groupId: string): Promise<FaqEntity[]> {
+    const result = await this.db.findAllByGroup(groupId);
+    return result;
   }
   async createOne(entity: FaqEntity): Promise<boolean> {
     const result = await this.db.createOne(entity);

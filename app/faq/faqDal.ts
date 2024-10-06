@@ -9,6 +9,7 @@ export interface FaqDal {
   createOne(entity: FaqEntity): Promise<boolean>;
   deleteOne(id: string): Promise<boolean>;
   findAll(): Promise<FaqEntity[]>;
+  findAllByGroup(groupId: string): Promise<FaqEntity[]>;
 }
 export class FaqDalConc implements FaqDal {
   logger: any;
@@ -20,12 +21,13 @@ export class FaqDalConc implements FaqDal {
     try {
       const db = await MongoDb.dbconnect();
       const objectId = parseToObjectId(id);
+      const objectGroupId = parseToObjectId(entity.groupId);
       const result = await db.collection('faqs').updateOne({
         _id: objectId,
       },
         {
           $set: {
-            groupId: 0,
+            groupId: objectGroupId,
             question: entity.question,
             answer: entity.answer,
             display: entity.display,
@@ -57,8 +59,9 @@ export class FaqDalConc implements FaqDal {
   async createOne(entity: FaqEntity): Promise<any> {
     try {
       const db = await MongoDb.dbconnect();
+      const objectGroupId = parseToObjectId(entity.groupId);
       const result = await db.collection('faqs').insertOne({
-        groupId: 0,
+        groupId: objectGroupId,
         question: entity.question,
         answer: entity.answer,
         display: entity.display,
@@ -97,8 +100,31 @@ export class FaqDalConc implements FaqDal {
     try {
 
       const db = await MongoDb.dbconnect();
-      result = await db.collection('faqs').find()
-        .sort({ createdAt: -1 }).toArray();
+      result = await db.collection('faqs').aggregate([
+        {
+          $lookup: {
+            from: "faqGroups",
+            localField: "groupId",
+            foreignField: "_id",
+            as: "group",
+          }
+        }, { $addFields: { group: { $first: "$group" } } }]).sort({ createdAt: -1 }).toArray()
+      return result;
+    } catch (err: any) {
+      this.logger.logError(err, "getAll");
+    } finally {
+      MongoDb.dbclose();
+    }
+    return result;
+  }
+
+
+  async findAllByGroup(groupId: string): Promise<FaqEntity[]> {
+    let result;
+    try {
+      const objectGroupId = parseToObjectId(groupId);
+      const db = await MongoDb.dbconnect();
+      result = await db.collection('faqs').find({ groupId: groupId }).toArray();
       return result;
     } catch (err: any) {
       this.logger.logError(err, "getAll");

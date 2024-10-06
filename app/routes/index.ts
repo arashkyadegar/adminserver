@@ -10,6 +10,7 @@ const UploadRouter = require("../upload/uploadRouter");
 const SettingRouter = require("../setting/settingRouter");
 const SettingWbRouter = require("../settingWeb/settingWbRouter");
 const FaqRouter = require("../faq/faqRouter");
+const FaqGroupRouter = require("../faqGroup/faqGroupRouter");
 const FaqWbRouter = require("../faqWeb/faqWbRouter");
 
 module.exports = function (app: any) {
@@ -24,6 +25,7 @@ module.exports = function (app: any) {
      app.use('/settings', SettingRouter);
      app.use('/api/wbsettings', SettingWbRouter);
      app.use('/faqs', FaqRouter);
+     app.use('/faqgroups', FaqGroupRouter);
      app.use('/api/wbfaqs', FaqWbRouter);
 
 }
