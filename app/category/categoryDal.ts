@@ -7,6 +7,7 @@ import { parseToObjectId } from "../utility/objectIdParser";
 
 export interface CategoryDal {
      findAll(): Promise<CategoryEntity[]>;
+     findAllByPages(page: number): Promise<any>;
      findOne(id: string): Promise<any>;
      search(name: string): Promise<any>;
      createOne(entity: CategoryEntity): Promise<boolean>;
@@ -130,7 +131,24 @@ export class CategoryDalConc implements CategoryDal {
           }
           return result;
      }
-
+     async findAllByPages(page: number): Promise<any> {
+          let result;
+          try {
+               let skipNumber = (page - 1) * 10;
+               const db = await MongoDb.dbconnect();
+               result = await db.collection('categories').aggregate([
+                    { $setWindowFields: { output: { totalCount: { $count: {} } } } },
+                    { $skip: skipNumber },
+                    { $limit: 10 }
+               ]).sort({ createdAt: -1 }).toArray()
+               return result;
+          } catch (err: any) {
+               this.logger.logError(err, "getAll");
+          } finally {
+               MongoDb.dbclose();
+          }
+          return result;
+     }
      async createOne(entity: CategoryEntity): Promise<any> {
           try {
                const db = await MongoDb.dbconnect();

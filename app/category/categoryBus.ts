@@ -9,7 +9,7 @@ export interface CategoryBus {
   deleteOne(id: string): Promise<boolean>;
   findAll(): Promise<CategoryEntity[]>;
   findAllGraph(): Promise<any>;
-
+  findAllByPages(page: number): Promise<any>;
 
 }
 
@@ -18,6 +18,7 @@ export class CategoryBusConc implements CategoryBus {
   constructor(db: CategoryDal) {
     this.db = db;
   }
+
 
 
   async findAllGraph(): Promise<any> {
@@ -57,5 +58,14 @@ export class CategoryBusConc implements CategoryBus {
   async findAll(): Promise<CategoryEntity[]> {
     const result = await this.db.findAll();
     return result;
+  }
+
+  async findAllByPages(page: number): Promise<any> {
+    let totalCount = 0;
+    const rows = await this.db.findAllByPages(page);
+    if (rows[0].totalCount) {
+      totalCount = rows[0].totalCount;
+    }
+    return { rows, totalCount, page: page };
   }
 }
