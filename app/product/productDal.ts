@@ -6,12 +6,14 @@ import { parseToObjectId } from "../utility/objectIdParser";
 
 export interface ProductDal {
      findAll(): Promise<any>;
+     findAllByPages(page: number): Promise<any>;
      findAllAbbrev(): Promise<any>;
      findOne(id: string): Promise<any>;
      search(name: string): Promise<any>;
      createOne(entity: ProductEntity): Promise<boolean>;
      updateOne(id: string, entity: ProductEntity): Promise<any>;
      deleteOne(id: string): Promise<boolean>;
+
 }
 
 export class ProductDalConc implements ProductDal {
@@ -138,7 +140,44 @@ export class ProductDalConc implements ProductDal {
           }
           return result;
      }
+     async findAllByPages(page: number): Promise<any> {
+          let result;
+          try {
+               let skipNumber = (page - 1) * 10;
+               const db = await MongoDb.dbconnect();
+               result = await db.collection('products').aggregate([
+                    {
+                         $lookup: {
+                              from: "categories",
+                              localField: "categoryId",
+                              foreignField: "_id",
+                              as: "category",
+                         }
+                    }, {
+                         $project: {
+                              "_id": 1,
+                              "name": 1,
+                              "stock": 1,
+                              "price": 1,
+                              "discount": 1,
+                              "images": 1,
+                              "status": 1,
+                              "createdAt": 1,
 
+                         }
+                    }, { $addFields: { category: { $first: "$category" } } },
+                    { $setWindowFields: { output: { totalCount: { $count: {} } } } },
+                    { $skip: skipNumber },
+                    { $limit: 10 }
+               ]).sort({ createdAt: -1 }).toArray()
+               return result;
+          } catch (err: any) {
+               this.logger.logError(err, "getAll");
+          } finally {
+               MongoDb.dbclose();
+          }
+          return result;
+     }
      async findAll(): Promise<any> {
           let result;
           try {

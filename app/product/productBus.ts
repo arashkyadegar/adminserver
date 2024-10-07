@@ -9,6 +9,7 @@ export interface ProductBus {
   deleteOne(id: string): Promise<boolean>;
   findAll(): Promise<ProductEntity[]>;
   findAllAbbrev(): Promise<ProductEntity[]>;
+  findAllByPages(page: number): Promise<any>;
 }
 
 export class ProductBusConc implements ProductBus {
@@ -16,6 +17,7 @@ export class ProductBusConc implements ProductBus {
   constructor(db: ProductDal) {
     this.db = db;
   }
+
   async findAllAbbrev(): Promise<ProductEntity[]> {
     const result = await this.db.findAllAbbrev();
     return result;
@@ -49,5 +51,14 @@ export class ProductBusConc implements ProductBus {
   async findAll(): Promise<ProductEntity[]> {
     const result = await this.db.findAll();
     return result;
+  }
+
+  async findAllByPages(page: number): Promise<any> {
+    let totalCount = 0;
+    const rows = await this.db.findAllByPages(page);
+    if (rows[0].totalCount) {
+      totalCount = rows[0].totalCount;
+    }
+    return { rows, totalCount, page: page };
   }
 }

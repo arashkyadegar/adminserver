@@ -22,7 +22,14 @@ export class ProductRouterClass {
 
      }
      async findAll(req, res, next): Promise<any> {
-          const result = await this.bus.findAll();
+          let page = 0;
+          let result;
+          if (req.query.page != undefined) {
+               page = parseInt(req.query.page.toString());
+               result = await this.bus.findAllByPages(page);
+          } else {
+               result = await this.bus.findAll();
+          }
           return {
                status: ResponseStatus.OK,
                message: result,
