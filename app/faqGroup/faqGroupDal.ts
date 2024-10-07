@@ -101,7 +101,7 @@ export class FaqGroupDalConc implements FaqGroupDal {
             foreignField: "groupId",
             as: "faqs",
           }
-        }]).toArray();
+        }]).sort({ priority: -1, createdAt: -1 }).toArray()
       return result;
     } catch (err: any) {
       this.logger.logError(err, "getAll");

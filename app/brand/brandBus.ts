@@ -27,7 +27,6 @@ export class BrandBusConc implements BrandBus {
   }
 
   async createOne(entity: BrandEntity): Promise<any> {
-    console.log(entity);
     const result = await this.db.createOne(entity);
     return result;
   }

@@ -28,7 +28,6 @@ export class ProductBusConc implements ProductBus {
 
   async updateOne(id: string, entity: ProductEntity): Promise<boolean> {
     const result = await this.db.updateOne(id, entity);
-    console.log(result);
     return result;
   }
 

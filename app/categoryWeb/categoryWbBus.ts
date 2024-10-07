@@ -12,7 +12,6 @@ export class CategoryWbBusConc implements CategoryWbBus {
   }
   async findAllGraph(): Promise<any> {
     const results = await this.db.findAll();
-    console.log(results)
     const nest = (results, id = 0, link = 'parent') =>
       results.filter((item: any) => item.parent === id)
         .map(item => ({ ...item, children: nest(results, item.id) }));

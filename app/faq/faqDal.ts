@@ -108,7 +108,7 @@ export class FaqDalConc implements FaqDal {
             foreignField: "_id",
             as: "group",
           }
-        }, { $addFields: { group: { $first: "$group" } } }]).sort({ createdAt: -1 }).toArray()
+        }, { $addFields: { group: { $first: "$group" } } }]).sort({ priority: -1, createdAt: -1 }).toArray()
       return result;
     } catch (err: any) {
       this.logger.logError(err, "getAll");
