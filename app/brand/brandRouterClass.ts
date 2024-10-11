@@ -13,17 +13,29 @@ export class BrandRouterClass {
   }
 
   async findAll(req, res, next): Promise<any> {
-    const result = await this.bus.findAll();
+    let page = 0;
+    let result;
+    if (req.query.page != undefined) {
+      page = parseInt(req.query.page.toString());
+      result = await this.bus.findAllByPages(page);
+    } else {
+      result = await this.bus.findAll();
+    }
     return {
       status: ResponseStatus.OK,
       message: result,
     };
-
   }
   async search(req, res, next): Promise<any> {
+    let page = 0;
+    let result;
+    if (req.query.page != undefined) {
+      page = parseInt(req.query.page.toString());
+    }
+
     if (req.query.name) {
       const name = req.query.name
-      const result = await this.bus.search(name);
+      result = await this.bus.search(name, page);
       return {
         status: ResponseStatus.OK,
         message: result,

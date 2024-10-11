@@ -9,7 +9,7 @@ export interface CategoryDal {
      findAll(): Promise<CategoryEntity[]>;
      findAllByPages(page: number): Promise<any>;
      findOne(id: string): Promise<any>;
-     search(name: string): Promise<any>;
+     search(name: string, page: number): Promise<any>;
      createOne(entity: CategoryEntity): Promise<boolean>;
      updateOne(id: string, entity: CategoryEntity): Promise<any>;
      deleteOne(id: string): Promise<boolean>;
@@ -18,6 +18,7 @@ export interface CategoryDal {
 
 export class CategoryDalConc implements CategoryDal {
      logger: IBaseLogger;
+     rowInPages: number = 10
      constructor() {
           this.logger = new CategoryDalConcLogger();
      }
@@ -44,9 +45,10 @@ export class CategoryDalConc implements CategoryDal {
                MongoDb.dbclose();
           }
      }
-     async search(name: string): Promise<any> {
+     async search(name: string, page: number): Promise<any> {
           try {
                let result;
+               let skipNumber = (page - 1) * this.rowInPages;
                const db = await MongoDb.dbconnect();
                result = await db.collection('categories').aggregate([
                     { $match: { name: { $regex: name, $options: "i" } } },
@@ -57,7 +59,11 @@ export class CategoryDalConc implements CategoryDal {
                               foreignField: "_id",
                               as: "store",
                          },
-                    }
+                    },
+                    { $addFields: { selected: false } },
+                    { $setWindowFields: { output: { totalCount: { $count: {} } } } },
+                    { $skip: skipNumber },
+                    { $limit: this.rowInPages }
                ])
                     .sort({ createdAt: -1 }).toArray();
                return result;
@@ -134,12 +140,13 @@ export class CategoryDalConc implements CategoryDal {
      async findAllByPages(page: number): Promise<any> {
           let result;
           try {
-               let skipNumber = (page - 1) * 10;
+               let skipNumber = (page - 1) * this.rowInPages;
                const db = await MongoDb.dbconnect();
                result = await db.collection('categories').aggregate([
+                    { $addFields: { selected: false } },
                     { $setWindowFields: { output: { totalCount: { $count: {} } } } },
                     { $skip: skipNumber },
-                    { $limit: 10 }
+                    { $limit: this.rowInPages }
                ]).sort({ createdAt: -1 }).toArray()
                return result;
           } catch (err: any) {

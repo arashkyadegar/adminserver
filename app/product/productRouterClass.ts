@@ -39,9 +39,15 @@ export class ProductRouterClass {
 
 
      async search(req, res, next): Promise<any> {
+          let page = 0;
+          let result;
+          if (req.query.page != undefined) {
+               page = parseInt(req.query.page.toString());
+          }
+
           if (req.query.name) {
                const name = req.query.name
-               const result = await this.bus.search(name);
+               result = await this.bus.search(name, page);
                return {
                     status: ResponseStatus.OK,
                     message: result,

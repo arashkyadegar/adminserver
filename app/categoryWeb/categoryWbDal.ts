@@ -7,12 +7,23 @@ import { parseToObjectId } from "../utility/objectIdParser";
 
 export interface CategoryWbDal {
      findAll(): Promise<any>;
+     findOneByName(name: string): Promise<any>;
 }
 
 export class CategoryWbDalConc implements CategoryWbDal {
      logger: IBaseLogger;
      constructor() {
           this.logger = new CategoryWbDalLogger();
+     }
+     async findOneByName(name: string): Promise<CategoryEntity[]> {
+          let result: CategoryEntity[] = [];
+          try {
+               const db = await MongoDb.dbconnect();
+               result = await db.collection('categories').find({ name: name }).toArray();
+          } catch (err: any) {
+               this.logger.logError(err, "findOne");
+          }
+          return result;
      }
      async findAll(): Promise<CategoryEntity[]> {
           let result;

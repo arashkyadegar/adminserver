@@ -11,7 +11,7 @@ var _ = require("lodash");
 export interface ProductWbBus {
   // updateOne(id: string, entity: ProductEntity): Promise<boolean>;
   findOne(id: string): Promise<ProductWbEntity>;
-  findAll(): Promise<ProductWbEntity[]>;
+  findAll(options: any): Promise<ProductWbEntity[]>;
   findByPage(page: number): Promise<ProductWbEntity[]>;
   search(options: any): Promise<ProductWbEntity[]>;
 }
@@ -29,9 +29,9 @@ export class ProductWbBusConc implements ProductWbBus {
     const result = await this.db.findByPage(page);
     return result;
   }
-  async findAll(): Promise<ProductWbEntity[]> {
+  async findAll(options: any): Promise<ProductWbEntity[]> {
     const today = new Date();
-    const result = await this.db.findAll();
+    const result = await this.db.findAll(options);
     return result;
   }
   async findOne(id: string): Promise<ProductWbEntity> {

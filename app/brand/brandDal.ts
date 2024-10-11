@@ -6,9 +6,10 @@ import { parseToObjectId } from "../utility/objectIdParser";
 
 export interface BrandDal {
   findAll(): Promise<any>;
+  findAllByPages(page: number): Promise<any>;
   findAllAbbrev(): Promise<any>;
   findOne(id: string): Promise<any>;
-  search(name: string): Promise<any>;
+  search(name: string, page: number): Promise<any>;
   createOne(entity: BrandEntity): Promise<boolean>;
   updateOne(id: string, entity: BrandEntity): Promise<any>;
   deleteOne(id: string): Promise<boolean>;
@@ -16,24 +17,21 @@ export interface BrandDal {
 
 export class BrandDalConc implements BrandDal {
   logger: IBaseLogger;
+  rowInPages: number = 10
   constructor() {
     this.logger = new BrandDalConcLogger();
   }
-  async search(name: string): Promise<any> {
+  async search(name: string, page: number): Promise<any> {
     try {
       let result;
-
+      let skipNumber = (page - 1) * this.rowInPages;
       const db = await MongoDb.dbconnect();
       result = await db.collection('brands').aggregate([
         { $match: { name: { $regex: name, $options: "i" } } },
-        , {
-          $project: {
-            "_id": 1,
-            "name": 1,
-            "image": 1,
-            "createdAt": 1,
-          }
-        }]).toArray();
+        { $addFields: { selected: false } },
+        { $setWindowFields: { output: { totalCount: { $count: {} } } } },
+        { $skip: skipNumber },
+        { $limit: this.rowInPages }]).toArray();
       return result;
     } catch (err: any) {
       this.logger.logError(err, "search");
@@ -111,6 +109,26 @@ export class BrandDalConc implements BrandDal {
       return result;
     } catch (err: any) {
       this.logger.logError(err, "findAll");
+    } finally {
+      MongoDb.dbclose();
+    }
+    return result;
+  }
+
+  async findAllByPages(page: number): Promise<any> {
+    let result;
+    try {
+      let skipNumber = (page - 1) * this.rowInPages;
+      const db = await MongoDb.dbconnect();
+      result = await db.collection('brands').aggregate([
+        { $addFields: { selected: false } },
+        { $setWindowFields: { output: { totalCount: { $count: {} } } } },
+        { $skip: skipNumber },
+        { $limit: this.rowInPages }
+      ]).sort({ createdAt: -1 }).toArray()
+      return result;
+    } catch (err: any) {
+      this.logger.logError(err, "findAllByPages");
     } finally {
       MongoDb.dbclose();
     }

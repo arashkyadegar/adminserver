@@ -2,6 +2,10 @@ import validator from "validator";
 import { ProductWbBus } from "./productWbBus";
 import { ResponseStatus } from "../utility/errorStatus";
 import { ProductWbRouterClassLogger } from "../logger/productLogger";
+import { parseToObjectId } from "../utility/objectIdParser";
+import { CategoryWbBusConc } from "../categoryWeb/categoryWbBus";
+import { CategoryDalConc } from "../category/categoryDal";
+import { CategoryWbDalConc } from "../categoryWeb/categoryWbDal";
 
 export class ProductWbRouterClass {
   bus: ProductWbBus;
@@ -18,8 +22,6 @@ export class ProductWbRouterClass {
     let priceMax = 10000000;
     let brands = [];
     let options: any = [];
-
-
 
     if (req.query.name != undefined) {
       if (req.query.name.trim() !== "") {
@@ -66,13 +68,45 @@ export class ProductWbRouterClass {
   }
 
   async findAll(req, res, next): Promise<any> {
-    const result = await this.bus.findAll();
+    let options: any = {};
+    let result;
+    options.categoryId = { $match: { categoryId: { $exists: true } } };
+    options.sort = { createdAt: -1 };
+
+
+    const categoryBus = new CategoryWbBusConc(new CategoryWbDalConc());
+    if (req.query.category != undefined) {
+      const categoryName = req.query.category;
+      const categories = await categoryBus.findOneByName(categoryName);
+      if (categories.length == 1) {
+        const id = categories[0]._id
+        options.categoryId = {
+          $match: { categoryId: id },
+        }
+      }
+    }
+
+    if (req.query.sortby != undefined) {
+      const sortby = req.query.sortby.trim();
+      switch (sortby) {
+        case 'costly':
+          options.sort = { price: -1 }
+          break;
+        case 'cheap':
+          options.sort = { price: +1 }
+          break;
+        case 'discount':
+          options.sort = { discount: -1 }
+          break;
+      }
+      result = await this.bus.findAll(options);
+    }
     return {
       status: ResponseStatus.OK,
       message: result,
     };
-  }
 
+  }
   async findOne(req, res, next): Promise<any> {
     let result;
     let wbuserId: string = "";

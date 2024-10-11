@@ -2,7 +2,7 @@ import { ProductDal } from "./productDal";
 import { ProductEntity } from "./productEntity";
 
 export interface ProductBus {
-  search(name: string): Promise<ProductEntity[]>;
+  search(name: string, page: number): Promise<ProductEntity[]>;
   updateOne(id: string, entity: ProductEntity): Promise<boolean>;
   findOne(id: string): Promise<ProductEntity>;
   createOne(entity: ProductEntity): Promise<ProductEntity>;
@@ -23,9 +23,15 @@ export class ProductBusConc implements ProductBus {
     return result;
   }
 
-  async search(name: string): Promise<ProductEntity[]> {
-    const result = await this.db.search(name);
-    return result;
+  async search(name: string, page: number): Promise<any> {
+    let totalCount = 0;
+    const rows = await this.db.search(name, page);
+    try {
+      if (rows[0].totalCount) {
+        totalCount = rows[0].totalCount;
+      }
+    } catch (ex: any) { }
+    return { rows, totalCount, page: page };
   }
 
   async updateOne(id: string, entity: ProductEntity): Promise<boolean> {

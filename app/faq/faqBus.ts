@@ -7,6 +7,7 @@ export interface FaqBus {
   createOne(entity: FaqEntity): Promise<boolean>;
   deleteOne(id: string): Promise<boolean>;
   findAll(): Promise<FaqEntity[]>;
+  findAllByPages(page: number): Promise<any>;
   findAllByGroup(groupId: string): Promise<FaqEntity[]>;
 }
 
@@ -15,6 +16,7 @@ export class FaqBusConc implements FaqBus {
   constructor(db: FaqDal) {
     this.db = db;
   }
+
   async findAllByGroup(groupId: string): Promise<FaqEntity[]> {
     const result = await this.db.findAllByGroup(groupId);
     return result;
@@ -38,5 +40,15 @@ export class FaqBusConc implements FaqBus {
   async updateOne(id: string, entity: FaqEntity): Promise<boolean> {
     const result = await this.db.updateOne(id, entity);
     return result;
+  }
+  async findAllByPages(page: number): Promise<any> {
+    let totalCount = 0;
+    const rows = await this.db.findAllByPages(page);
+    try {
+      if (rows[0].totalCount) {
+        totalCount = rows[0].totalCount;
+      }
+    } catch (ex: any) { }
+    return { rows, totalCount, page: page };
   }
 }

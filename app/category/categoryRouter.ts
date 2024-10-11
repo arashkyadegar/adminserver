@@ -35,7 +35,7 @@ CategoryRouter.get("/search", async function (req, res, next) {
 });
 
 
-CategoryRouter.get("/",  async function (req, res, next) {
+CategoryRouter.get("/", async function (req, res, next) {
   try {
     const bus = new CategoryBusConc(new CategoryDalConc());
     const router = new CategoryRouterClass(bus);
@@ -63,7 +63,7 @@ CategoryRouter.get("/:id", async function (req, res, next) {
 });
 
 
-CategoryRouter.delete("/:id",  async function (req, res, next) {
+CategoryRouter.delete("/:id", async function (req, res, next) {
   try {
     const bus = new CategoryBusConc(new CategoryDalConc());
     const router = new CategoryRouterClass(bus);
@@ -77,7 +77,9 @@ CategoryRouter.delete("/:id",  async function (req, res, next) {
 });
 
 
-CategoryRouter.put("/:id",  async function (req, res, next) {
+
+
+CategoryRouter.put("/:id", async function (req, res, next) {
   try {
     const bus = new CategoryBusConc(new CategoryDalConc());
     const router = new CategoryRouterClass(bus);

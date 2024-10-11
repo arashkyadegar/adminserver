@@ -9,10 +9,12 @@ export interface FaqDal {
   createOne(entity: FaqEntity): Promise<boolean>;
   deleteOne(id: string): Promise<boolean>;
   findAll(): Promise<FaqEntity[]>;
+  findAllByPages(page: number): Promise<any>;
   findAllByGroup(groupId: string): Promise<FaqEntity[]>;
 }
 export class FaqDalConc implements FaqDal {
   logger: any;
+  rowInPages: number = 10
   constructor() {
     this.logger = new FaqDalConcLogger();
   }
@@ -108,7 +110,35 @@ export class FaqDalConc implements FaqDal {
             foreignField: "_id",
             as: "group",
           }
-        }, { $addFields: { group: { $first: "$group" } } }]).sort({ priority: -1, createdAt: -1 }).toArray()
+        }, { $addFields: { group: { $first: "$group" } } }
+      ]).sort({ priority: -1, createdAt: -1 }).toArray()
+      return result;
+    } catch (err: any) {
+      this.logger.logError(err, "getAll");
+    } finally {
+      MongoDb.dbclose();
+    }
+    return result;
+  }
+
+  async findAllByPages(page: number): Promise<any> {
+    let result;
+    try {
+      let skipNumber = (page - 1) * this.rowInPages;
+      const db = await MongoDb.dbconnect();
+      result = await db.collection('faqs').aggregate([
+        {
+          $lookup: {
+            from: "faqGroups",
+            localField: "groupId",
+            foreignField: "_id",
+            as: "group",
+          }
+        }, { $addFields: { selected: false } },
+        { $setWindowFields: { output: { totalCount: { $count: {} } } } },
+        { $skip: skipNumber },
+        { $limit: this.rowInPages }, { $addFields: { group: { $first: "$group" } } }
+      ]).sort({ priority: -1, createdAt: -1 }).toArray()
       return result;
     } catch (err: any) {
       this.logger.logError(err, "getAll");

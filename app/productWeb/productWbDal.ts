@@ -7,7 +7,7 @@ var ObjectId = require("mongodb").ObjectId;
 export interface ProductWbDal {
   // updateOne(id: string, entity: ProductEntity): Promise<boolean>;
   findOne(id: string,): Promise<ProductWbEntity>;
-  findAll(): Promise<ProductWbEntity[]>;
+  findAll(options: any): Promise<ProductWbEntity[]>;
   findByPage(page: number): Promise<ProductWbEntity[]>;
   search(options: any): Promise<ProductWbEntity[]>;
 }
@@ -52,7 +52,7 @@ export class ProductWbDalConc implements ProductWbDal {
     return result;
   }
 
-  async findOne(id: string,): Promise<ProductWbEntity> {
+  async findOne(id: string): Promise<ProductWbEntity> {
     let result;
     try {
       const objectId = parseToObjectId(id);
@@ -64,12 +64,12 @@ export class ProductWbDalConc implements ProductWbDal {
     return result;
   }
 
-  async findAll(): Promise<ProductWbEntity[]> {
+  async findAll(options: any): Promise<ProductWbEntity[]> {
     let result = new Array<ProductWbEntity>();
-
     try {
       const db = await MongoDb.dbconnect();
       result = await db.collection('products').aggregate([
+        options.categoryId,
         {
           $lookup: {
             from: "categories",
@@ -88,9 +88,11 @@ export class ProductWbDalConc implements ProductWbDal {
             "status": 1,
             "createdAt": 1,
             "category.name": 1,
+            "category.pageTitle": 1
 
           }
-        }, { $addFields: { category: { $first: "$category" } } }]).sort({ createdAt: -1 }).toArray();
+        }, { $addFields: { category: { $first: "$category" } } }])
+        .sort(options.sort).toArray();
       return result;
     } catch (err: any) {
       this.logger.logError(err, "getAll");

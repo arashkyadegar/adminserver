@@ -2,7 +2,7 @@ import { CategoryDal } from "./categoryDal";
 import { CategoryEntity } from "./categoryEntity";
 
 export interface CategoryBus {
-  search(name: string): Promise<CategoryEntity[]>;
+  search(name: string, page: number): Promise<CategoryEntity[]>;
   updateOne(id: string, entity: CategoryEntity): Promise<boolean>;
   findOne(id: string): Promise<CategoryEntity>;
   createOne(entity: CategoryEntity): Promise<CategoryEntity>;
@@ -29,9 +29,18 @@ export class CategoryBusConc implements CategoryBus {
     const tree = nest(results)
     return tree;
   }
-  async search(name: string): Promise<CategoryEntity[]> {
-    const result = await this.db.search(name);
-    return result;
+
+
+  async search(name: string, page: number): Promise<any> {
+    let totalCount = 0;
+    const rows = await this.db.search(name, page);
+    try {
+      if (rows[0].totalCount) {
+        totalCount = rows[0].totalCount;
+      }
+    } catch (ex: any) { }
+    return { rows, totalCount, page: page };
+
   }
   async updateOne(id: string, entity: CategoryEntity): Promise<boolean> {
     const result = await this.db.updateOne(id, entity);
@@ -63,9 +72,11 @@ export class CategoryBusConc implements CategoryBus {
   async findAllByPages(page: number): Promise<any> {
     let totalCount = 0;
     const rows = await this.db.findAllByPages(page);
-    if (rows[0].totalCount) {
-      totalCount = rows[0].totalCount;
-    }
+    try {
+      if (rows[0].totalCount) {
+        totalCount = rows[0].totalCount;
+      }
+    } catch (ex: any) { }
     return { rows, totalCount, page: page };
   }
 }

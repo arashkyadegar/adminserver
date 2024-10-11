@@ -9,22 +9,22 @@ export interface ProductDal {
      findAllByPages(page: number): Promise<any>;
      findAllAbbrev(): Promise<any>;
      findOne(id: string): Promise<any>;
-     search(name: string): Promise<any>;
+     search(name: string, page: number): Promise<any>;
      createOne(entity: ProductEntity): Promise<boolean>;
      updateOne(id: string, entity: ProductEntity): Promise<any>;
      deleteOne(id: string): Promise<boolean>;
-
 }
 
 export class ProductDalConc implements ProductDal {
      logger: IBaseLogger;
+     rowInPages: number = 10
      constructor() {
           this.logger = new ProductDalConcLogger();
      }
-     async search(name: string): Promise<any> {
+     async search(name: string, page: number): Promise<any> {
           try {
                let result;
-
+               let skipNumber = (page - 1) * this.rowInPages;
                const db = await MongoDb.dbconnect();
                result = await db.collection('products').aggregate([
                     { $match: { name: { $regex: name, $options: "i" } } },
@@ -46,7 +46,14 @@ export class ProductDalConc implements ProductDal {
                               "status": 1,
                               "createdAt": 1,
                          }
-                    }, { $addFields: { category: { $first: "$category" } } }]).toArray();
+                    },
+
+                    { $addFields: { selected: false } },
+                    { $setWindowFields: { output: { totalCount: { $count: {} } } } },
+                    { $skip: skipNumber },
+                    { $limit: this.rowInPages }
+                    ,
+                    { $addFields: { category: { $first: "$category" } } }]).toArray();
                return result;
           } catch (err: any) {
                this.logger.logError(err, "search");
@@ -165,7 +172,8 @@ export class ProductDalConc implements ProductDal {
                               "createdAt": 1,
 
                          }
-                    }, { $addFields: { category: { $first: "$category" } } },
+                    },
+                    { $addFields: { category: { $first: "$category" } } },
                     { $setWindowFields: { output: { totalCount: { $count: {} } } } },
                     { $skip: skipNumber },
                     { $limit: 10 }
