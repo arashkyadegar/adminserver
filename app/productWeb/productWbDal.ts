@@ -7,7 +7,7 @@ var ObjectId = require("mongodb").ObjectId;
 export interface ProductWbDal {
   // updateOne(id: string, entity: ProductEntity): Promise<boolean>;
   findOne(id: string,): Promise<ProductWbEntity>;
-  findAll(options: any): Promise<ProductWbEntity[]>;
+  findAll(options: any,page: number): Promise<any>;
   findByPage(page: number): Promise<ProductWbEntity[]>;
   search(options: any): Promise<ProductWbEntity[]>;
 }
@@ -64,8 +64,9 @@ export class ProductWbDalConc implements ProductWbDal {
     return result;
   }
 
-  async findAll(options: any): Promise<ProductWbEntity[]> {
+  async findAll(options: any,page: number): Promise<ProductWbEntity[]> {
     let result = new Array<ProductWbEntity>();
+    let skipNumber = (page - 1) * 10;
     try {
       const db = await MongoDb.dbconnect();
       result = await db.collection('products').aggregate([
@@ -91,7 +92,11 @@ export class ProductWbDalConc implements ProductWbDal {
             "category.pageTitle": 1
 
           }
-        }, { $addFields: { category: { $first: "$category" } } }])
+        }, { $addFields: { category: { $first: "$category" } } },
+        { $setWindowFields: { output: { totalCount: { $count: {} } } } },
+        { $skip: skipNumber },
+        { $limit: 10 }
+      ])
         .sort(options.sort).toArray();
       return result;
     } catch (err: any) {

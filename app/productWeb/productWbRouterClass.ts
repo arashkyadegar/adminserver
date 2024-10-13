@@ -70,11 +70,19 @@ export class ProductWbRouterClass {
   async findAll(req, res, next): Promise<any> {
     let options: any = {};
     let result;
+    let page = 1;
     options.categoryId = { $match: { categoryId: { $exists: true } } };
     options.sort = { createdAt: -1 };
 
 
     const categoryBus = new CategoryWbBusConc(new CategoryWbDalConc());
+
+    if (req.query.page != undefined) {
+      page = parseInt(req.query.page.toString());
+    }
+
+
+
     if (req.query.category != undefined) {
       const categoryName = req.query.category;
       const categories = await categoryBus.findOneByName(categoryName);
@@ -99,7 +107,7 @@ export class ProductWbRouterClass {
           options.sort = { discount: -1 }
           break;
       }
-      result = await this.bus.findAll(options);
+      result = await this.bus.findAll(options, page);
     }
     return {
       status: ResponseStatus.OK,

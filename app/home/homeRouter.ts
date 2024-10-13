@@ -31,9 +31,11 @@ HomeRouter.get("/init", async function (req, res, next) {
 
     const settings = await settingWb_bus.findOne("1");
     let options: any = {};
+    let page = 1;
     options.sort = { createdAt: -1 }
     options.categoryId = { $match: { categoryId: { $exists: true } } };
-    const products = await productWb_bus.findAll(options);
+
+    const products = await productWb_bus.findAll(options, page);
     const brands = await brandWb_bus.findAll();
     const categories = await cateroyWb_bus.findAllGraph();
     return res.status(200).send({ settings, products, brands, categories });
