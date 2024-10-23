@@ -7,23 +7,17 @@ const bodyParser = require("body-parser");
 var app = express();
 
 //////////////////
-var allowlist = [
-  'https://arashkyadegar.ir',
-  'http://arashkyadegar.ir',
-  'https://adminapp.arashkyadegar.ir',
-  'http://adminapp.arashkyadegar.ir',
-  'http://localhost:3000',
-  'http://localhost:3001'
-];
-var corsOptions = {
-  //  origin: "https://nextjs-lopencandy.iran.liara.run",
-    origin:  'http://localhost:3000',
-  optionsSuccessStatus: 200,
-  methods: "GET, PUT, POST, DELETE",
-  //preflightContinue: true,
-  credentials: true,
+
+
+const corsOptions = {
+  origin: ['https://arashkyadegar.ir','https://adminapp.arashkyadegar.ir','http://localhost:3000'],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  optionsSuccessStatus: 200 // For legacy browser support
 };
-app.use(cors());
+
+
+app.use(cors(corsOptions));
+
 ////////////////////
 
 app.use(bodyParser.json());
