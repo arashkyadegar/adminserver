@@ -3,6 +3,7 @@ Joi.objectId = require("joi-objectid")(Joi);
 
 export class ProductWbEntity {
 
+
 }
 
 export class ExtraEntity {

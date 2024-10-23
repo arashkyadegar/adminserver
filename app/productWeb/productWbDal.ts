@@ -7,16 +7,17 @@ var ObjectId = require("mongodb").ObjectId;
 export interface ProductWbDal {
   // updateOne(id: string, entity: ProductEntity): Promise<boolean>;
   findOne(id: string,): Promise<ProductWbEntity>;
-  findAll(options: any,page: number): Promise<any>;
+  findAll(options: any, page: number): Promise<any>;
   findByPage(page: number): Promise<ProductWbEntity[]>;
-  search(options: any): Promise<ProductWbEntity[]>;
+  search(options: any): Promise<any>;
 }
 export class ProductWbDalConc implements ProductWbDal {
   logger: any;
   constructor() {
     this.logger = new ProductDalConcLogger();
   }
-  async search(options: any): Promise<ProductWbEntity[]> {
+  async search(options: any): Promise<ProductWbEntity[]>  {
+    let skipNumber = 1 * 5;
     let result;
     try {
 
@@ -45,10 +46,18 @@ export class ProductWbDalConc implements ProductWbDal {
             "createdAt": 1,
             "brand": 1
           }
-        }, { $addFields: { category: { $first: "$category" } } }]).toArray();
+        }, { $addFields: { category: { $first: "$category" } } }
+        ,
+        { $setWindowFields: { output: { totalCount: { $count: {} } } } },
+        { $skip: 0 },
+        { $limit: 10 }
+
+      ]).toArray();
     } catch (err: any) {
+
       this.logger.logError(err, "findOne");
     }
+
     return result;
   }
 
@@ -64,7 +73,7 @@ export class ProductWbDalConc implements ProductWbDal {
     return result;
   }
 
-  async findAll(options: any,page: number): Promise<ProductWbEntity[]> {
+  async findAll(options: any, page: number): Promise<ProductWbEntity[]> {
     let result = new Array<ProductWbEntity>();
     let skipNumber = (page - 1) * 10;
     try {
@@ -111,12 +120,12 @@ export class ProductWbDalConc implements ProductWbDal {
     let result;
     try {
       const db = await MongoDb.dbconnect();
-      let skipNumber = page * 5;
+      let skipNumber = page * 10;
       await db.collection('products').then((products) => {
         result = products
           .find({})
           .skip(skipNumber)
-          .limit(5)
+          .limit(10)
           .sort({ date: -1 })
           .toArray();
       });

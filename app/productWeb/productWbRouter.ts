@@ -18,8 +18,6 @@ ProductWbRouter.get("/search", async function (req, res, next) {
   }
 });
 
-
-
 ProductWbRouter.get("/", async function (req, res, next) {
   try {
     const bus = new ProductWbBusConc(new ProductWbDalConc());

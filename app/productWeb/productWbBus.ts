@@ -21,9 +21,15 @@ export class ProductWbBusConc implements ProductWbBus {
   constructor(db: ProductWbDal) {
     this.db = db;
   }
-  async search(options: any): Promise<ProductWbEntity[]> {
-    const result = await this.db.search(options);
-    return result;
+  async search(options: any): Promise<any> {
+    let totalCount = 0;
+    const rows = await this.db.search(options);
+    if (rows[0]) {
+      if (rows[0].totalCount) {
+        totalCount = rows[0].totalCount;
+      }
+    }
+    return { rows, totalCount, page: 1 };
   }
   async findByPage(page: number): Promise<ProductWbEntity[]> {
     const result = await this.db.findByPage(page);

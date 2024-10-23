@@ -16,7 +16,6 @@ export class ProductWbRouterClass {
   }
 
   async search(req, res, next): Promise<any> {
-
     let name = "";
     let priceMin = 0;
     let priceMax = 10000000;
@@ -61,6 +60,7 @@ export class ProductWbRouterClass {
 
 
     const result = await this.bus.search(options);
+    console.log(result)
     return {
       status: ResponseStatus.OK,
       message: result,
