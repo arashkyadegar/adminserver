@@ -5,9 +5,9 @@ import { parseToObjectId } from "../utility/objectIdParser";
 
 export interface FaqDal {
   updateOne(id: string, entity: FaqEntity): Promise<boolean>;
-  findOne(id: string): Promise<FaqEntity>;
+  findOne(id: string): Promise<FaqEntity[]>;
   createOne(entity: FaqEntity): Promise<boolean>;
-  deleteOne(id: string): Promise<boolean>;
+  deleteOne(id: string): Promise<FaqEntity>;
   findAll(): Promise<FaqEntity[]>;
   findAllByPages(page: number): Promise<any>;
   findAllByGroup(groupId: string): Promise<FaqEntity[]>;
@@ -45,7 +45,7 @@ export class FaqDalConc implements FaqDal {
     }
   }
 
-  async findOne(id: string): Promise<FaqEntity> {
+  async findOne(id: string): Promise<FaqEntity[]> {
     let result;
     try {
       const objectId = parseToObjectId(id);
@@ -79,28 +79,26 @@ export class FaqDalConc implements FaqDal {
   }
 
 
-  async deleteOne(id: string): Promise<any> {
+  async deleteOne(id: string): Promise<FaqEntity> {
     let result;
     try {
       const objectId = parseToObjectId(id);
       const db = await MongoDb.dbconnect();
-      result = await db.collection('faqs').deleteOne({
+      result = await db.collection('faqs').findOneAndDelete({
         _id: objectId,
       });
-
-      return result;
     } catch (err: any) {
       this.logger.logError(err, "deleteOne");
     } finally {
       MongoDb.dbclose();
+      return result;
     }
   }
 
 
   async findAll(): Promise<FaqEntity[]> {
-    let result;
+    let result: FaqEntity[] = [];
     try {
-
       const db = await MongoDb.dbconnect();
       result = await db.collection('faqs').aggregate([
         {
@@ -114,6 +112,7 @@ export class FaqDalConc implements FaqDal {
       ]).sort({ priority: -1, createdAt: -1 }).toArray()
       return result;
     } catch (err: any) {
+      console.log(err);
       this.logger.logError(err, "getAll");
     } finally {
       MongoDb.dbclose();
@@ -121,8 +120,8 @@ export class FaqDalConc implements FaqDal {
     return result;
   }
 
-  async findAllByPages(page: number): Promise<any> {
-    let result;
+  async findAllByPages(page: number): Promise<FaqEntity[]> {
+    let result: FaqEntity[] = [];
     try {
       let skipNumber = (page - 1) * this.rowInPages;
       const db = await MongoDb.dbconnect();
@@ -141,7 +140,7 @@ export class FaqDalConc implements FaqDal {
       ]).sort({ priority: -1, createdAt: -1 }).toArray()
       return result;
     } catch (err: any) {
-      this.logger.logError(err, "getAll");
+      this.logger.logError(err, "findAllByPages");
     } finally {
       MongoDb.dbclose();
     }
@@ -150,14 +149,14 @@ export class FaqDalConc implements FaqDal {
 
 
   async findAllByGroup(groupId: string): Promise<FaqEntity[]> {
-    let result;
+    let result: FaqEntity[] = [];
     try {
       const objectGroupId = parseToObjectId(groupId);
       const db = await MongoDb.dbconnect();
       result = await db.collection('faqs').find({ groupId: groupId }).toArray();
       return result;
     } catch (err: any) {
-      this.logger.logError(err, "getAll");
+      this.logger.logError(err, "findAllByGroup");
     } finally {
       MongoDb.dbclose();
     }

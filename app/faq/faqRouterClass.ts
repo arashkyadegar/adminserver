@@ -28,6 +28,8 @@ export class FaqRouterClass {
 
   async deleteOne(req, res, next) {
     let result;
+
+    //if id is undefined
     if (req.params.id === undefined) {
       const errorResponse = `validation failed. id is not provided`;
       this.logger.logError(errorResponse, "deleteOne");
@@ -37,6 +39,7 @@ export class FaqRouterClass {
       };
     }
 
+    //if id is not valid
     if (!validator.isMongoId(req.params.id.toString())) {
       const errorResponse = `validation failed. id is not valid`;
       this.logger.logError(errorResponse, "deleteOne");
@@ -48,6 +51,16 @@ export class FaqRouterClass {
 
     let id = req.params.id;
     result = await this.bus.deleteOne(id);
+
+    //if item is not found
+    if (!result) {
+      return {
+        status: ResponseStatus.NOT_FOUND,
+        message: result,
+      };
+    }
+
+    //if operation succeed
     return {
       status: ResponseStatus.OK,
       message: result,
@@ -78,14 +91,14 @@ export class FaqRouterClass {
     let id = req.params.id;
     result = await this.bus.findOne(id);
 
-    if (result === undefined) {
-      const errorResponse = `item not found.`;
-      this.logger.logError(errorResponse, "findOne");
+    //if item is not found
+    if (result.length == 0) {
       return {
         status: ResponseStatus.NOT_FOUND,
-        message: errorResponse,
+        message: result,
       };
     }
+
     return {
       status: ResponseStatus.OK,
       message: result,

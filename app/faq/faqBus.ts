@@ -3,9 +3,9 @@ import { FaqEntity } from "./faqEntity";
 
 export interface FaqBus {
   updateOne(id: string, entity: FaqEntity): Promise<boolean>;
-  findOne(id: string): Promise<FaqEntity>;
+  findOne(id: string): Promise<FaqEntity[]>;
   createOne(entity: FaqEntity): Promise<boolean>;
-  deleteOne(id: string): Promise<boolean>;
+  deleteOne(id: string): Promise<FaqEntity>;
   findAll(): Promise<FaqEntity[]>;
   findAllByPages(page: number): Promise<any>;
   findAllByGroup(groupId: string): Promise<FaqEntity[]>;
@@ -25,7 +25,7 @@ export class FaqBusConc implements FaqBus {
     const result = await this.db.createOne(entity);
     return result;
   }
-  async deleteOne(id: string): Promise<boolean> {
+  async deleteOne(id: string): Promise<FaqEntity> {
     const result = await this.db.deleteOne(id);
     return result;
   }
@@ -33,7 +33,7 @@ export class FaqBusConc implements FaqBus {
     const result = await this.db.findAll();
     return result;
   }
-  async findOne(id: string): Promise<FaqEntity> {
+  async findOne(id: string): Promise<FaqEntity[]> {
     const result = await this.db.findOne(id);
     return result;
   }
