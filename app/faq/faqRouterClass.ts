@@ -156,9 +156,13 @@ export class FaqRouterClass {
       message: result,
     };
   }
+
+
+
   async createOne(req, res, next): Promise<any> {
     let result;
     const faqEntity = req.body as FaqEntity;
+
     const { error } = FaqSchema.validate(faqEntity);
 
     if (error) {
@@ -169,7 +173,17 @@ export class FaqRouterClass {
         status: ResponseStatus.BAD_REQUEST,
       };
     }
+
+
     result = await this.bus.createOne(faqEntity);
+
+    if (!result) {
+      return {
+        message: 'operation failed',
+        status: ResponseStatus.BAD_REQUEST,
+      };
+    }
+
     return {
       status: ResponseStatus.OK,
       message: result,

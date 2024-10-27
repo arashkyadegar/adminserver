@@ -1,0 +1,6 @@
+::1 ::1 - - [27/Oct/2024:21:12:25 +0000] "GET / HTTP/1.1" 200 20 
+::1 ::1 - - [27/Oct/2024:21:19:53 +0000] "GET / HTTP/1.1" 200 20 
+::1 ::1 - - [27/Oct/2024:21:20:00 +0000] "GET / HTTP/1.1" 200 20 
+::1 ::1 - - {"_id":"","groupId":"6702f6ff757dac373460a45","question":"dsdsd","answer":"asdasdasd","display":true,"priority":0,"createdAt":""} [27/Oct/2024:21:21:28 +0000] "GET / HTTP/1.1" 200 20 
+::1 ::1 - - {"_id":"","groupId":"6702f6ff757dac373460a45","question":"dsdsd","answer":"asdasdasd","display":true,"priority":0,"createdAt":""} [27/Oct/2024:21:22:15 +0000] "GET / HTTP/1.1" 200 20 
+::1 ::1 - - [27/Oct/2024:21:22:58 +0000] "GET / HTTP/1.1" 200 20 {"_id":"","groupId":"6702f6ff757dac373460a45","question":"dsdsd","answer":"asdasdasd","display":true,"priority":0,"createdAt":""}

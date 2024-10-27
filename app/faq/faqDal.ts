@@ -6,7 +6,7 @@ import { parseToObjectId } from "../utility/objectIdParser";
 export interface FaqDal {
   updateOne(id: string, entity: FaqEntity): Promise<boolean>;
   findOne(id: string): Promise<FaqEntity[]>;
-  createOne(entity: FaqEntity): Promise<boolean>;
+  createOne(entity: FaqEntity): Promise<any>;
   deleteOne(id: string): Promise<FaqEntity>;
   findAll(): Promise<FaqEntity[]>;
   findAllByPages(page: number): Promise<any>;
@@ -59,10 +59,11 @@ export class FaqDalConc implements FaqDal {
 
 
   async createOne(entity: FaqEntity): Promise<any> {
+
     try {
       const db = await MongoDb.dbconnect();
       const objectGroupId = parseToObjectId(entity.groupId);
-      const result = await db.collection('faqs').insertOne({
+      let result = await db.collection('faqs').insertOne({
         groupId: objectGroupId,
         question: entity.question,
         answer: entity.answer,
