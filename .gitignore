@@ -3,5 +3,6 @@ package-lock.json
 dist
 .env
 error.log
+access.log
 public
 *.zip
