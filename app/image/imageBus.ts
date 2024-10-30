@@ -1,30 +1,32 @@
-import { ImageWbDal } from "./imageDal";
-import { ImageWbEntity } from "./imageEntity";
+import { ImageDal } from "./imageDal";
+import { ImageEntity } from "./imageEntity";
 
 export interface ImageBus {
 
-  findOne(id: string): Promise<ImageWbEntity>;
-  createOne(entity: ImageWbEntity): Promise<ImageWbEntity>;
+  findOne(id: string): Promise<ImageEntity>;
+  createOne(entity: ImageEntity): Promise<ImageEntity>;
   deleteOne(id: string): Promise<boolean>;
-  findAll(product_id: number): Promise<ImageWbEntity[]>;
+  findAll(product_id: number): Promise<ImageEntity[]>;
 }
 
 export class ImageBusConc implements ImageBus {
-  private db: ImageWbDal;
-  constructor(db: ImageWbDal) {
+  private db: ImageDal;
+  constructor(db: ImageDal) {
     this.db = db;
   }
-  findOne(id: string): Promise<ImageWbEntity> {
-    throw new Error("Method not implemented.");
+  async findOne(id: string): Promise<ImageEntity> {
+    const result = await this.db.findOne(id);
+    return result;
   }
-  createOne(entity: ImageWbEntity): Promise<ImageWbEntity> {
-    throw new Error("Method not implemented.");
+  async createOne(entity: ImageEntity): Promise<ImageEntity> {
+    const result = await this.db.createOne(entity);
+    return result;
   }
   deleteOne(id: string): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
-  async findAll(product_id: number): Promise<ImageWbEntity[]> {
-    const result = await this.db.findAll(product_id);
+  async findAll(): Promise<ImageEntity[]> {
+    const result = await this.db.findAll();
     return result;
   }
 }

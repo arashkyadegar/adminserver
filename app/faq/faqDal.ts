@@ -4,9 +4,9 @@ import { MongoDb } from "../config/mongodb";
 import { parseToObjectId } from "../utility/objectIdParser";
 
 export interface FaqDal {
-  updateOne(id: string, entity: FaqEntity): Promise<boolean>;
+  updateOne(id: string, entity: FaqEntity): Promise<FaqEntity>;
   findOne(id: string): Promise<FaqEntity[]>;
-  createOne(entity: FaqEntity): Promise<any>;
+  createOne(entity: FaqEntity): Promise<FaqEntity>;
   deleteOne(id: string): Promise<FaqEntity>;
   findAll(): Promise<FaqEntity[]>;
   findAllByPages(page: number): Promise<any>;
@@ -19,12 +19,13 @@ export class FaqDalConc implements FaqDal {
     this.logger = new FaqDalConcLogger();
   }
 
-  async updateOne(id: string, entity: FaqEntity): Promise<any> {
+  async updateOne(id: string, entity: FaqEntity): Promise<FaqEntity> {
+    let result;
     try {
       const db = await MongoDb.dbconnect();
       const objectId = parseToObjectId(id);
       const objectGroupId = parseToObjectId(entity.groupId);
-      const result = await db.collection('faqs').updateOne({
+      result = await db.collection('faqs').updateOne({
         _id: objectId,
       },
         {
@@ -37,15 +38,17 @@ export class FaqDalConc implements FaqDal {
             updatedAt: Date.now(),
           },
         });
-      return result;
+
     } catch (err: any) {
       this.logger.logError(err, "updateOne");
     } finally {
       MongoDb.dbclose();
+      return result;
     }
   }
 
   async findOne(id: string): Promise<FaqEntity[]> {
+
     let result;
     try {
       const objectId = parseToObjectId(id);
@@ -58,12 +61,12 @@ export class FaqDalConc implements FaqDal {
   }
 
 
-  async createOne(entity: FaqEntity): Promise<any> {
-
+  async createOne(entity: FaqEntity): Promise<FaqEntity> {
+    let result;
     try {
       const db = await MongoDb.dbconnect();
       const objectGroupId = parseToObjectId(entity.groupId);
-      let result = await db.collection('faqs').insertOne({
+      result = await db.collection('faqs').insertOne({
         groupId: objectGroupId,
         question: entity.question,
         answer: entity.answer,
@@ -71,11 +74,11 @@ export class FaqDalConc implements FaqDal {
         priority: entity.priority,
         createdAt: Date.now(),
       });
-      return result;
     } catch (err: any) {
       this.logger.logError(err, "createOne");
     } finally {
       MongoDb.dbclose();
+      return result;
     }
   }
 
@@ -98,6 +101,7 @@ export class FaqDalConc implements FaqDal {
 
 
   async findAll(): Promise<FaqEntity[]> {
+    console.log('called')
     let result: FaqEntity[] = [];
     try {
       const db = await MongoDb.dbconnect();
@@ -122,6 +126,7 @@ export class FaqDalConc implements FaqDal {
   }
 
   async findAllByPages(page: number): Promise<FaqEntity[]> {
+    console.log('called')
     let result: FaqEntity[] = [];
     try {
       let skipNumber = (page - 1) * this.rowInPages;

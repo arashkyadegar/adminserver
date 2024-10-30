@@ -21,6 +21,7 @@ export class BrandRouterClass {
     } else {
       result = await this.bus.findAll();
     }
+
     return {
       status: ResponseStatus.OK,
       message: result,
@@ -182,4 +183,4 @@ export class BrandRouterClass {
   }
 }
 
-module.exports = { BrandRouterClass };
+// export default BrandRouterClass;

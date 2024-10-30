@@ -1,33 +1,167 @@
 
 import { IBaseLogger } from "../logger/iBaseLogger";
 import { ImageDalConcLogger } from "../logger/imageLogger";
-import { ProductWbEntity } from "../product/productEntity";
-import { ImageWbEntity } from "./imageEntity";
+import { ImageEntity } from "./imageEntity";
+import { MongoDb } from "../config/mongodb";
+import { parseToObjectId } from "../utility/objectIdParser";
 
-export interface ImageWbDal {
-  creatOne(entity: ImageWbEntity);
-  findOne(id: string,): Promise<ImageWbEntity>;
-  findAll(product_id: number): Promise<ImageWbEntity[]>;
-  findByPage(page: number): Promise<ImageWbEntity[]>;
+export interface ImageDal {
+  findAll(): Promise<any>;
+  findAllByPages(page: number): Promise<any>;
+  findOne(id: string): Promise<any>;
+  search(name: string, page: number): Promise<any>;
+  createOne(entity: ImageEntity): Promise<ImageEntity>;
+  updateOne(id: string, entity: ImageEntity): Promise<ImageEntity>;
+  deleteOne(id: string): Promise<boolean>;
 }
 
-export class ImageWbDalConc implements ImageWbDal {
+export class ImageDalConc implements ImageDal {
   logger: IBaseLogger;
+  rowInPages: number = 10
   constructor() {
     this.logger = new ImageDalConcLogger();
   }
-  creatOne(entity: ImageWbEntity) {
-    throw new Error("Method not implemented.");
-  }
-  findOne(id: string): Promise<ImageWbEntity> {
-    throw new Error("Method not implemented.");
-  }
-  async findAll(product_id: number): Promise<ImageWbEntity[]> {
-    let result;
+  async search(name: string, page: number): Promise<any> {
+    try {
+      let result;
+      let skipNumber = (page - 1) * this.rowInPages;
+      const db = await MongoDb.dbconnect();
+      result = await db.collection('images').aggregate([
+        { $match: { name: { $regex: name, $options: "i" } } },
+        { $addFields: { selected: false } },
+        { $setWindowFields: { output: { totalCount: { $count: {} } } } },
+        { $skip: skipNumber },
+        { $limit: this.rowInPages }]).toArray();
       return result;
+    } catch (err: any) {
+      this.logger.logError(err, "search");
+    } finally {
+      MongoDb.dbclose();
+    }
+  }
+  async updateOne(id: string, entity: ImageEntity): Promise<any> {
+    try {
+      const db = await MongoDb.dbconnect();
+      const objectId = parseToObjectId(id);
+      const result = await db.collection('images').updateOne({
+        _id: objectId,
+      },
+        {
+          $set: {
+            name: entity.name,
+            alt: entity.alt,
+            updatedAt: Date.now()
+          },
+        });
+      return result;
+    } catch (err: any) {
+      this.logger.logError(err, "updateOne");
+    } finally {
+      MongoDb.dbclose();
+    }
+  }
+
+  async deleteOne(id: string): Promise<any> {
+    let result;
+    try {
+      const objectId = parseToObjectId(id);
+      const db = await MongoDb.dbconnect();
+      result = await db.collection('images').deleteOne({
+        _id: objectId,
+      });
+
+      return result;
+    } catch (err: any) {
+      this.logger.logError(err, "deleteOne");
+    } finally {
+      MongoDb.dbclose();
+    }
 
   }
-  findByPage(page: number): Promise<ImageWbEntity[]> {
-    throw new Error("Method not implemented.");
+  async findAllAbbrev(): Promise<any> {
+    let result;
+    try {
+
+      const db = await MongoDb.dbconnect();
+      result = await db.collection('images').aggregate([
+        {
+          $project: {
+            "_id": 1,
+            "name": 1
+          }
+        }
+      ]).toArray();
+      return result;
+    } catch (err: any) {
+      this.logger.logError(err, "findAllAbbrev");
+    } finally {
+      MongoDb.dbclose();
+    }
+    return result;
   }
+
+  async findAll(): Promise<any> {
+    let result;
+    try {
+      const db = await MongoDb.dbconnect();
+      result = await db.collection('images').find()
+        .sort({ createdAt: -1 }).toArray();
+      return result;
+    } catch (err: any) {
+      this.logger.logError(err, "findAll");
+    } finally {
+      MongoDb.dbclose();
+    }
+    return result;
+  }
+
+  async findAllByPages(page: number): Promise<any> {
+    let result;
+    try {
+      let skipNumber = (page - 1) * this.rowInPages;
+      const db = await MongoDb.dbconnect();
+      result = await db.collection('images').aggregate([
+        { $addFields: { selected: false } },
+        { $setWindowFields: { output: { totalCount: { $count: {} } } } },
+        { $skip: skipNumber },
+        { $limit: this.rowInPages }
+      ]).sort({ createdAt: -1 }).toArray()
+      return result;
+    } catch (err: any) {
+      this.logger.logError(err, "findAllByPages");
+    } finally {
+      MongoDb.dbclose();
+    }
+    return result;
+  }
+
+  async createOne(entity: ImageEntity): Promise<any> {
+    try {
+      const db = await MongoDb.dbconnect();
+      const result = await db.collection('images').insertOne({
+        name: entity.name,
+        image: entity.alt,
+        createdAt: Date.now()
+      });
+      return result;
+    } catch (err: any) {
+      this.logger.logError(err, "createOne");
+    } finally {
+      MongoDb.dbclose();
+    }
+  }
+
+  async findOne(id: string): Promise<ImageEntity> {
+    let result;
+    try {
+      const objectId = parseToObjectId(id);
+      const db = await MongoDb.dbconnect();
+      result = await db.collection('images').find({ _id: objectId }).toArray();
+    } catch (err: any) {
+      this.logger.logError(err, "findOne");
+    }
+    return result;
+  }
+
 }
+

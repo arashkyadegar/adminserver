@@ -4,9 +4,9 @@ import { FaqGroupDal } from "./faqGroupDal";
 import { FaqGroupEntity } from "./faqGroupEntity";
 
 export interface FaqGroupBus {
-  updateOne(id: string, entity: FaqGroupEntity): Promise<boolean>;
+  updateOne(id: string, entity: FaqGroupEntity): Promise<FaqGroupEntity>;
   findOne(id: string): Promise<FaqGroupEntity>;
-  createOne(entity: FaqGroupEntity): Promise<boolean>;
+  createOne(entity: FaqGroupEntity): Promise<FaqGroupEntity>;
   deleteOne(id: string): Promise<boolean>;
   findAll(): Promise<FaqGroupEntity[]>;
 }
@@ -16,7 +16,7 @@ export class FaqGroupBusConc implements FaqGroupBus {
   constructor(db: FaqGroupDal) {
     this.db = db;
   }
-  async createOne(entity: FaqGroupEntity): Promise<boolean> {
+  async createOne(entity: FaqGroupEntity): Promise<FaqGroupEntity> {
     const result = await this.db.createOne(entity);
     return result;
   }
@@ -32,7 +32,7 @@ export class FaqGroupBusConc implements FaqGroupBus {
     const result = await this.db.findOne(id);
     return result;
   }
-  async updateOne(id: string, entity: FaqGroupEntity): Promise<boolean> {
+  async updateOne(id: string, entity: FaqGroupEntity): Promise<FaqGroupEntity> {
     const result = await this.db.updateOne(id, entity);
     return result;
   }

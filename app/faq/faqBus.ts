@@ -2,9 +2,9 @@ import { FaqDal } from "./faqDal";
 import { FaqEntity } from "./faqEntity";
 
 export interface FaqBus {
-  updateOne(id: string, entity: FaqEntity): Promise<boolean>;
+  updateOne(id: string, entity: FaqEntity): Promise<FaqEntity>;
   findOne(id: string): Promise<FaqEntity[]>;
-  createOne(entity: FaqEntity): Promise<any>;
+  createOne(entity: FaqEntity): Promise<FaqEntity>;
   deleteOne(id: string): Promise<FaqEntity>;
   findAll(): Promise<FaqEntity[]>;
   findAllByPages(page: number): Promise<any>;
@@ -21,10 +21,8 @@ export class FaqBusConc implements FaqBus {
     const result = await this.db.findAllByGroup(groupId);
     return result;
   }
-  async createOne(entity: FaqEntity): Promise<any> {
+  async createOne(entity: FaqEntity): Promise<FaqEntity> {
     const result = await this.db.createOne(entity);
-    console.log('ddddd')
-    console.log(result)
     return result;
   }
   async deleteOne(id: string): Promise<FaqEntity> {
@@ -39,7 +37,7 @@ export class FaqBusConc implements FaqBus {
     const result = await this.db.findOne(id);
     return result;
   }
-  async updateOne(id: string, entity: FaqEntity): Promise<boolean> {
+  async updateOne(id: string, entity: FaqEntity): Promise<FaqEntity> {
     const result = await this.db.updateOne(id, entity);
     return result;
   }

@@ -1,6 +1,4 @@
-import { ImageBusConc } from "../image/imageBus";
-import { ImageWbDalConc } from "../image/imageDal";
-import { ImageWbEntity } from "../image/imageEntity";
+
 import { ProductEntity, ProductWbEntity } from "../product/productEntity";
 import { ProductWbDal } from "./productWbDal";
 // import { checkLikesByUser } from "../likeWeb/likeWbUtility";

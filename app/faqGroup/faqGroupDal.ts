@@ -4,9 +4,9 @@ import { MongoDb } from "../config/mongodb";
 import { parseToObjectId } from "../utility/objectIdParser";
 
 export interface FaqGroupDal {
-  updateOne(id: string, entity: FaqGroupEntity): Promise<boolean>;
+  updateOne(id: string, entity: FaqGroupEntity): Promise<FaqGroupEntity>;
   findOne(id: string): Promise<FaqGroupEntity>;
-  createOne(entity: FaqGroupEntity): Promise<boolean>;
+  createOne(entity: FaqGroupEntity): Promise<FaqGroupEntity>;
   deleteOne(id: string): Promise<boolean>;
   findAll(): Promise<FaqGroupEntity[]>;
 }
@@ -17,10 +17,11 @@ export class FaqGroupDalConc implements FaqGroupDal {
   }
 
   async updateOne(id: string, entity: FaqGroupEntity): Promise<any> {
+    let result;
     try {
       const db = await MongoDb.dbconnect();
       const objectId = parseToObjectId(id);
-      const result = await db.collection('faqGroups').updateOne({
+      result = await db.collection('faqGroups').updateOne({
         _id: objectId,
       },
         {
@@ -31,11 +32,12 @@ export class FaqGroupDalConc implements FaqGroupDal {
             updatedAt: Date.now(),
           },
         });
-      return result;
+
     } catch (err: any) {
       this.logger.logError(err, "updateOne");
     } finally {
       MongoDb.dbclose();
+      return result;
     }
   }
 
@@ -53,19 +55,20 @@ export class FaqGroupDalConc implements FaqGroupDal {
 
 
   async createOne(entity: FaqGroupEntity): Promise<any> {
+    let result;
     try {
       const db = await MongoDb.dbconnect();
-      const result = await db.collection('faqGroups').insertOne({
+      result = await db.collection('faqGroups').insertOne({
         name: entity.name,
         display: entity.display,
         priority: entity.priority,
         createdAt: Date.now(),
       });
-      return result;
     } catch (err: any) {
       this.logger.logError(err, "createOne");
     } finally {
       MongoDb.dbclose();
+      return result;
     }
   }
 

@@ -1,9 +1,9 @@
-import { ImageWbEntity } from "../image/imageEntity";
+ import { ImageEntity } from "../image/imageEntity";
 
 const Joi = require("joi");
 export class SettingEntity {
   _id: string = "1";
-  slideImages: ImageWbEntity[] = [];
+  slideImages: ImageEntity[] = [];
 
   createdAt: Date | undefined;
   updatedAt: Date | undefined;

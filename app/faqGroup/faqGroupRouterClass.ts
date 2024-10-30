@@ -157,4 +157,5 @@ export class FaqGroupRouterClass {
   }
 }
 
-module.exports = { FaqGroupRouterClass };
+
+module.exports = { FaqGroupRouterClass : FaqGroupRouterClass};
