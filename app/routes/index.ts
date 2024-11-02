@@ -12,9 +12,11 @@ const SettingWbRouter = require("../settingWeb/settingWbRouter");
 const FaqRouter = require("../faq/faqRouter");
 const FaqGroupRouter = require("../faqGroup/faqGroupRouter");
 const FaqWbRouter = require("../faqWeb/faqWbRouter");
+const ImageRouter = require("../image/imageRouter");
 
 module.exports = function (app: any) {
      app.use('/', HomeRouter);
+     app.use('/images', ImageRouter);
      app.use('/categories', CategoryRouter);
      app.use('/brands', BrandRouter);
      app.use('/api/wbbrands', BrandWbRouter);

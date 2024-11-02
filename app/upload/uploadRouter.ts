@@ -10,7 +10,7 @@ const fs = require('fs');
 const storage = multer.diskStorage({
   destination: path.resolve("./public/data/uploads"),
   filename: function (req, file, callback) {
-    callback(null, file.originalname)
+    callback(null, Date.now().toString() + '-' + file.originalname )
   }
 
   // destination: function (req, file, cb) {

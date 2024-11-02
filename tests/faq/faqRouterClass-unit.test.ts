@@ -118,4 +118,98 @@ describe('faqRouterClass', () => {
 
     })
   });
+
+  describe("createOne", function () {
+    test('1-createOne should fail if entity is not valid', async () => {
+      const mRes = {
+        status: jest.fn().mockReturnValue(400),
+        send: jest.fn()
+      };
+
+      // const mReq = {};
+      const mReq = {
+
+        body: {
+          name: 'aaaa'
+        }
+
+      }
+      const bus = new FaqBusConc(new FaqDalConc());
+      bus.createOne = jest.fn().mockReturnValue({});
+      const router = new FaqRouterClass(bus);
+
+      //act
+      const response = await router.createOne(mReq, mRes, (e: any) => { console.log(e) });
+      expect(response).toHaveProperty('status', 400)
+
+    });
+
+
+    test('2-createOne should succssed if entity valid faqEntity', async () => {
+      const mRes = {
+        status: jest.fn().mockReturnValue(400),
+        send: jest.fn()
+      };
+
+      // const mReq = {};
+      const mReq = {
+
+        body: {
+          "_id": "",
+          "groupId": "6702f6ff757dac373460a145",
+          "question": "dsdsd",
+          "answer": "asdasdasd",
+          "display": true,
+          "priority": 1,
+          "createdAt": ""
+        }
+
+      }
+      const bus = new FaqBusConc(new FaqDalConc());
+      bus.createOne = jest.fn().mockReturnValue({});
+      const router = new FaqRouterClass(bus);
+
+      //act
+      const response = await router.createOne(mReq, mRes, (e: any) => { console.log(e) });
+      console.log(response)
+      expect(response).toHaveProperty('status', 200)
+
+    });
+
+
+    test('3-createOne should fail if retuned object from dal is null', async () => {
+      const mRes = {
+        status: jest.fn().mockReturnValue(400),
+        send: jest.fn()
+      };
+
+      // const mReq = {};
+      const mReq = {
+
+        body: {
+          "_id": "",
+          "groupId": "6702f6ff757dac373460a145",
+          "question": "dsdsd",
+          "answer": "asdasdasd",
+          "display": true,
+          "priority": 1,
+          "createdAt": ""
+        }
+
+      }
+      const bus = new FaqBusConc(new FaqDalConc());
+      bus.createOne = jest.fn().mockReturnValue(null);
+      const router = new FaqRouterClass(bus);
+
+      //act
+      const response = await router.createOne(mReq, mRes, (e: any) => { console.log(e) });
+      console.log(response)
+      expect(response).toHaveProperty('status', 400)
+
+    });
+  });
+
+
+
+
 });

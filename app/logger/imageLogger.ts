@@ -106,5 +106,6 @@ export class ImageWbRouterClassLogger implements IBaseLogger {
 module.exports = {
      ImageRouterClassLogger,
      ImageRouterLogger,
-     ImageDalConcLogger
+     ImageDalConcLogger,
+     ImageWbRouterClassLogger
 }

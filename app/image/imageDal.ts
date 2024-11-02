@@ -1,7 +1,6 @@
-
 import { IBaseLogger } from "../logger/iBaseLogger";
 import { ImageDalConcLogger } from "../logger/imageLogger";
-import { ImageEntity } from "./imageEntity";
+import { ImageEntity, ImageListEntity } from "./imageEntity";
 import { MongoDb } from "../config/mongodb";
 import { parseToObjectId } from "../utility/objectIdParser";
 
@@ -11,6 +10,7 @@ export interface ImageDal {
   findOne(id: string): Promise<any>;
   search(name: string, page: number): Promise<any>;
   createOne(entity: ImageEntity): Promise<ImageEntity>;
+  createMany(entities: ImageListEntity): Promise<ImageListEntity>;
   updateOne(id: string, entity: ImageEntity): Promise<ImageEntity>;
   deleteOne(id: string): Promise<boolean>;
 }
@@ -20,6 +20,19 @@ export class ImageDalConc implements ImageDal {
   rowInPages: number = 10
   constructor() {
     this.logger = new ImageDalConcLogger();
+  }
+  async createMany(entities: ImageListEntity): Promise<ImageListEntity> {
+    let result;
+    try {
+      const db = await MongoDb.dbconnect();
+      result = await db.collection('images').insertMany(entities.images);
+      return result;
+    } catch (err: any) {
+      this.logger.logError(err, "createMany");
+    } finally {
+      MongoDb.dbclose();
+      return result;
+    }
   }
   async search(name: string, page: number): Promise<any> {
     try {

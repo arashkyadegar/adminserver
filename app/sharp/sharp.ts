@@ -8,11 +8,11 @@ export class ImageProcessor {
       .resize(500)
       .jpeg({ quality: 40 })
       .toFile(
-        path.resolve(file.destination, 're_' + file.filename)
+        path.resolve(file.destination, 're-' + file.filename)
       )
     sharp.cache(false);
     fs.unlinkSync(file.path);
-    const result = 're_' + file.filename;
+    const result = 're-' + file.filename;
     return result;
   }
 }
