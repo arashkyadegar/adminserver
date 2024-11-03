@@ -1,3 +1,5 @@
+
+
 var express = require("express");
 const BrandWbRouter = require("../brandWeb/brandWbRouter");
 const BrandRouter = require("../brand/brandRouter");
@@ -13,9 +15,11 @@ const FaqRouter = require("../faq/faqRouter");
 const FaqGroupRouter = require("../faqGroup/faqGroupRouter");
 const FaqWbRouter = require("../faqWeb/faqWbRouter");
 const ImageRouter = require("../image/imageRouter");
+const TicketRouter = require("../ticket/ticketRouter");
 
 module.exports = function (app: any) {
      app.use('/', HomeRouter);
+     app.use('/tickets', TicketRouter);
      app.use('/images', ImageRouter);
      app.use('/categories', CategoryRouter);
      app.use('/brands', BrandRouter);
