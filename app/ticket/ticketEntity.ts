@@ -41,7 +41,7 @@ export const TicketSchema = Joi.object({
   body: Joi.string(),
 
   attachments: Joi.array().min(0),
-  categoryId: Joi.objectId(),
+  categoryId: Joi.string(),
 
   priority: Joi.string(),
   status: Joi.string(),

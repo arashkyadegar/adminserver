@@ -49,12 +49,11 @@ export class TicketDalConc implements TicketDal {
     let result;
     try {
       const db = await MongoDb.dbconnect();
-      const objectCategoryId = parseToObjectId(entity.categoryId);
       result = await db.collection('tickets').insertOne({
         subject: entity.subject,
         body: entity.body,
         attachments: entity.attachments,
-        categoryId: objectCategoryId,
+        categoryId: entity.categoryId,
         priority: entity.priority,
         status: entity.status,
         createdAt: Date.now(),
