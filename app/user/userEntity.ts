@@ -1,29 +1,44 @@
 import { Store } from "express-rate-limit";
 
 const Joi = require("joi");
-export class IUser {
+
+
+export class UserEntity {
      _id!: string;
-     username!: string;
-     password!: string;
-     store!: Store;
+     name!: string;
+     email: string = "";
+     lastName: string = "";
+     firstName: string = "";
+
+     mobile!: string;
+     password !: string;
+     picture!: string;
+     roles: string[] = []
      createdAt!: Date;
      updatedAt!: Date;
 }
 
-export class UserEntity extends IUser { }
-export class UserWbEntity extends IUser { }
+
 
 export const UserSchema = Joi.object({
      _id: Joi.string().allow(""),
-     username: Joi.string().min(5),
-     password: Joi.string().min(5),
-     store: Joi.object(),
+     name: Joi.string().allow(""),
+     email: Joi.string(),
+
+
+     lastName: Joi.string().allow(""),
+     firstName: Joi.string().allow(""),
+     mobile: Joi.string().allow(""),
+     password: Joi.string().allow(""),
+     picture: Joi.string().allow(""),
+
+     roles: Joi.array(),
+
      createdAt: Joi.string().allow(""),
      updatedAt: Joi.string().allow("")
 });
 
 module.exports = {
      UserSchema,
-     UserEntity,
-     UserWbEntity,
+     UserEntity
 };
