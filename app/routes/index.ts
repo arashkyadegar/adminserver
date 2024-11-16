@@ -18,6 +18,7 @@ const ImageRouter = require("../image/imageRouter");
 const TicketRouter = require("../ticket/ticketRouter");
 const UserRouter = require("../user/userRouter");
 const AuthGoogle = require("../auth/auth-google");
+const SharpRouter = require("../sharp/sharpRouterClass");
 
 module.exports = function (app: any) {
      app.use('/', HomeRouter);
@@ -34,7 +35,9 @@ module.exports = function (app: any) {
      app.use('/api/wbsettings', SettingWbRouter);
      app.use('/faqs', FaqRouter);
      app.use('/users', UserRouter);
+
      app.use('/faqgroups', FaqGroupRouter);
      app.use('/api/wbfaqs', FaqWbRouter);
      app.use("/api/auth/google", AuthGoogle);
+     app.use('/sharp', SharpRouter);
 }
